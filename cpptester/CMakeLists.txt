@@ -21,9 +21,10 @@ find_package(Eigen3 REQUIRED)
 set (HEADERS
 	../cppsource/index_selector.h
 	../cppsource/UT.h
+	../cppsource/SelUT.h
 	../cppsource/RelUT.h
-	../cppsource/RelAUT.h
-	../cppsource/AUT.h
+	#../cppsource/RelAUT.h
+	#../cppsource/AUT.h
 	../cppsource/PartialCholevski.h
 	)
 	

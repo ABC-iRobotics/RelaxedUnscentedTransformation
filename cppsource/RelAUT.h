@@ -23,7 +23,7 @@ void RelAUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 	for (int i = 0; i < inl.size(); i++)
 		NL[inl[i]] = 1;
 	// partial Choleski
-	Eigen::MatrixXd L = SF::PartialChol(S0, NL);
+	Eigen::MatrixXd L = PartialChol(S0, NL);
 	// Main iteration
 	double bestcost, lambdabest;
 	for (double lambda = sfmin; lambda <= sfmax; lambda += dsf) {
@@ -105,5 +105,4 @@ void RelAUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 			lambdabest = lambda;
 		}
 	}
-	//std::cout << "Used scaling factor: " << lambdabest << std::endl << std::endl;
 }

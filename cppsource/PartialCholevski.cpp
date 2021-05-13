@@ -1,11 +1,10 @@
-#include <iostream>
 #include "PartialCholevski.h"
-
-using namespace SF;
+#include<sstream>
+using namespace RelaxedUT;
 
 typedef Eigen::LLT<Eigen::MatrixXd>::RealScalar Real;
 
-Eigen::MatrixXd SF::PartialChol(Eigen::MatrixXd a, Eigen::VectorXi v) {
+Eigen::MatrixXd RelaxedUT::PartialChol(Eigen::MatrixXd a, Eigen::VectorXi v) {
 	const Eigen::Index n = a.rows();
 	double eps = a.trace()*1e-10;
 	const Eigen::Index nOut = v.sum();
@@ -22,10 +21,12 @@ Eigen::MatrixXd SF::PartialChol(Eigen::MatrixXd a, Eigen::VectorXi v) {
 				break;
 			}
 			if (temp < Real(0)) {
-				std::cout << temp << std::endl;
-				std::cout << "The considered matrix" << std::endl << a << std::endl << std::endl;
-				std::cout << "To be decomposed by column" << std::endl << v.transpose() << std::endl << std::endl;
-				throw std::runtime_error(std::string("The matrix is not positive definite or numerical error."));
+
+				std::stringstream errormsg;
+				errormsg << "The value " << temp << " is negative, when matrix (" << a <<
+					") was  decomposed by column (" << v.transpose() <<
+					"). The matrix is not positive definite or numerical error.";
+				throw std::runtime_error(errormsg.str());
 			}
 			out(j, i) = sqrtl(temp);
 			for (unsigned int k = 0; k < n; k++) {

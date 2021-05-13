@@ -1,8 +1,7 @@
 #pragma once
-
 #include "Eigen/Dense"
 
-namespace SF {
+namespace RelaxedUT {
 
 	/* \brief Cholevski-factorization of positive semi-definite matrices in the given columns
 	 *

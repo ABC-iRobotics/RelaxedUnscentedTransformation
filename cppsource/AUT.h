@@ -17,7 +17,7 @@ void AUT(const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 	for (int i = 0; i < n; i++)
 		NL[i] = 1;
 	// partial Choleski
-	Eigen::MatrixXd L = SF::PartialChol(S0, NL);
+	Eigen::MatrixXd L = PartialChol(S0, NL);
 	double bestcost, lambdabest;
 	for (double lambda = sfmin; lambda <= sfmax; lambda += dsf) {
 		// weights

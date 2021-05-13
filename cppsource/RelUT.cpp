@@ -3,7 +3,9 @@
 #include "RelUT.h"
 #include <Eigen/QR>
 
-void genQ(int n, const Eigen::VectorXi& inl, const MixedNonlinearityList& mix,
+using namespace RelaxedUT;
+
+void RelaxedUT::genQ(int n, const Eigen::VectorXi& inl, const MixedNonlinearityList& mix,
 	Eigen::SparseMatrix<double>& Q,
 	Eigen::SparseMatrix<double>& Q1) {
 	// Construct M matrix from the weights keeping it orthogonal to inl

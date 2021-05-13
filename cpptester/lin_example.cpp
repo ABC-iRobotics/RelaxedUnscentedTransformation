@@ -1,8 +1,12 @@
 #include "SLAMexample.h"
 #include "RelUT.h"
+#include "UT.h"
 #include <iostream>
 #include "Eigen/Dense"
 #include <chrono>
+
+using namespace RelaxedUT;
+
 typedef std::chrono::time_point<std::chrono::system_clock> Time;
 
 typedef std::chrono::microseconds DTime;
