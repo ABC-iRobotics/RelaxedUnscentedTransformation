@@ -22,13 +22,13 @@ set (HEADERS
 	../cppsource/index_selector.h
 	../cppsource/UT.h
 	../cppsource/SelUT.h
-	../cppsource/RelUT.h
+	../cppsource/RelaxedUT.h
 	../cppsource/PartialCholevski.h
 	)
 	
 set (SOURCES
 	../cppsource/index_selector.cpp
-	../cppsource/RelUT.cpp
+	../cppsource/RelaxedUT.cpp
 	../cppsource/PartialCholevski.cpp
 	)
 
@@ -50,7 +50,7 @@ endif()
 target_include_directories(lib_relaxedUT INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../cppsource/>)
 
-add_executable(example_SLAM AUT.h RelAUT.h SLAMmodels.cpp SLAMmodels.h
+add_executable(example_SLAM AUT.h RelaxedAUT.h SLAMmodels.cpp SLAMmodels.h
 		Simulator.h Simulator.cpp readData.cpp readData.h SLAM_example.cpp)
 target_link_libraries(example_SLAM lib_relaxedUT)
 target_compile_definitions(example_SLAM

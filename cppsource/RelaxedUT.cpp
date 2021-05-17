@@ -1,11 +1,11 @@
 #pragma once
 
-#include "RelUT.h"
+#include "RelaxedUT.h"
 #include <Eigen/QR>
 
-using namespace RelaxedUT;
+using namespace RelaxedUnscentedTransformation;
 
-void RelaxedUT::genQ(int n, const Eigen::VectorXi& inl, const MixedNonlinearityList& mix,
+void RelaxedUnscentedTransformation::genQ(int n, const Eigen::VectorXi& inl, const MixedNonlinearityList& mix,
 	Eigen::SparseMatrix<double>& Q,
 	Eigen::SparseMatrix<double>& Q1) {
 	// Construct M matrix from the weights keeping it orthogonal to inl

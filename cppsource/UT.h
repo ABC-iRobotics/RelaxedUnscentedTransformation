@@ -1,7 +1,7 @@
 #pragma once
 #include "SelUT.h"
 
-namespace RelaxedUT {
+namespace RelaxedUnscentedTransformation {
 
 	/*! \brief Traditional Unscented transformation
 	*

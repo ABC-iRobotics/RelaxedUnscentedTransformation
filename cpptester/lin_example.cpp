@@ -1,8 +1,8 @@
-#include "RelUT.h"
+#include "RelaxedUT.h"
 #include "UT.h"
 #include <iostream>
 
-using namespace RelaxedUT;
+using namespace RelaxedUnscentedTransformation;
 using namespace Eigen;
 
 // This example considers the most simple, y=x mapping where the length of vector x is 4
@@ -86,7 +86,7 @@ struct RelaxedIdentityUT {
 	}
 
 	void UT(const VectorXd& x, const MatrixXd& Sx, VectorXd& y, MatrixXd& Sy, MatrixXd& Sxy) {
-		RelUT(A, il, RelaxedIdentityUT::IdentityExampleNonlinear, F, g, Q, Q1,
+		RelaxedUT(A, il, RelaxedIdentityUT::IdentityExampleNonlinear, F, g, Q, Q1,
 			x, Sx, y, Sy, Sxy);
 	}
 };

@@ -4,7 +4,7 @@
 #include "index_selector.h"
 #include "PartialCholevski.h"
 
-namespace RelaxedUT {
+namespace RelaxedUnscentedTransformation {
 
 	/*! \brief Selective Unscented transformation
 	*

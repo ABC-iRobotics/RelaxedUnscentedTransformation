@@ -1,8 +1,8 @@
 #include "SLAMmodels.h"
-#include "RelUT.h"
-#include "RelAUT.h"
+#include "RelaxedAUT.h"
+#include "RelaxedUT.h"
 using namespace Eigen;
-using namespace RelaxedUT;
+using namespace RelaxedUnscentedTransformation;
 
 VectorXd SLAMStateUpdateFull(const VectorXd& a, double Ts) {
 	VectorXd out = a.segment(2, a.size() - 2);
@@ -81,7 +81,7 @@ void SLAMStateUpdate::UT(double Ts, double v, double omega, double Sv, double So
 	Sin(0, 0) = Sv;
 	Sin(1, 1) = Somega;
 	Sin.block(2, 2, x.size(), x.size()) = Sx;
-	RelUT(A, il, fin, F, inl, in, Sin, y, Sy, Sxy);
+	RelaxedUT(A, il, fin, F, inl, in, Sin, y, Sy, Sxy);
 }
 
 SLAMOutputUpdate::SLAMOutputUpdate() : il(1) {
@@ -123,7 +123,7 @@ void SLAMOutputUpdate::UT(const std::vector<int>& actives, Eigen::VectorXd & x, 
 	// K : 0 of 2N+2 x 3
 	MatrixXd F = MatrixXd::Zero(0, 2 * actives.size());
 
-	RelUT(A, il, fin, F, inl, x, Sx, y, Sy, Sxy);
+	RelaxedUT(A, il, fin, F, inl, x, Sx, y, Sy, Sxy);
 }
 
 void SLAMOutputUpdate::AUT(const std::vector<int>& actives,

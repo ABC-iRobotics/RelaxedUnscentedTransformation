@@ -1,9 +1,9 @@
-﻿#include "RelUT.h"
+﻿#include "RelaxedUT.h"
 #include "UT.h"
 #include <iostream>
 #include <chrono>
 
-using namespace RelaxedUT;
+using namespace RelaxedUnscentedTransformation;
 using namespace Eigen;
 
 const double Ts = 0.005;
@@ -145,8 +145,8 @@ int main (void) {
 		MatrixXd modified_Sx1, modified_Sx1x0, modified_Syx, modified_Sy;
 		start = std::chrono::system_clock::now();
 		for (long i = 0; i < N_UT; i++) {
-			RelUT(A, il, f2, F, inl, x, S0, modified_x1, modified_Sx1, modified_Sx1x0);
-			RelUT(C, il, g2, F, inl, modified_x1, modified_Sx1, modified_y, modified_Sy, modified_Syx);
+			RelaxedUT(A, il, f2, F, inl, x, S0, modified_x1, modified_Sx1, modified_Sx1x0);
+			RelaxedUT(C, il, g2, F, inl, modified_x1, modified_Sx1, modified_y, modified_Sy, modified_Syx);
 		}
 		end = std::chrono::system_clock::now();
 		auto dur_relaxed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

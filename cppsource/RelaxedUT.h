@@ -2,7 +2,7 @@
 #include <Eigen/SparseCore>
 #include "SelUT.h"
 
-namespace RelaxedUT {
+namespace RelaxedUnscentedTransformation {
 
 	/*! \brief Relaxed Unscented transformation (with reindexing and exact subspace)
 	*
@@ -30,7 +30,7 @@ namespace RelaxedUT {
 	*  Sxz: a matrix of size n x g
 	*/
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
@@ -60,7 +60,7 @@ namespace RelaxedUT {
 	*  Sxz: a matrix of size n x g
 	*/
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
@@ -91,7 +91,7 @@ namespace RelaxedUT {
 	*  Sxz: a matrix of size n x g
 	*/
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
@@ -119,7 +119,7 @@ namespace RelaxedUT {
 	*  Sxz: a matrix of size n x g
 	*/
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
@@ -140,7 +140,7 @@ namespace RelaxedUT {
 
 	// g and Q
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
@@ -180,7 +180,7 @@ namespace RelaxedUT {
 
 	// no g and Q
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
@@ -218,7 +218,7 @@ namespace RelaxedUT {
 
 	// g and no Q
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {
@@ -257,7 +257,7 @@ namespace RelaxedUT {
 
 	// no g and no Q
 	template <typename Func>
-	void RelUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
+	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {

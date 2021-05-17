@@ -2,7 +2,7 @@
 
 #include "Eigen/Dense"
 
-namespace RelaxedUT {
+namespace RelaxedUnscentedTransformation {
 
 	/* \brief Function that returns the values of a vector with given indices as a new vector
 	*/

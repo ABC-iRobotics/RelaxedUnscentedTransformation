@@ -4,7 +4,7 @@
 #include "UT.h"
 #include "AUT.h"
 using namespace Eigen;
-using namespace RelaxedUT;
+using namespace RelaxedUnscentedTransformation;
 
 Eigen::VectorXd computeNewLandmarkPosition(const Eigen::VectorXd & rdelta_x) {
 	Eigen::VectorXd out(2);
