@@ -24,8 +24,8 @@ namespace RelaxedUT {
 		Func fin, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
 
 	template<typename Func>
-	void UT(const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
+	void UT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
 		Func fin, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
-		SelUT(x0, S0, (int)x0.size(), fin, z, Sz, Sxz);
+		SelUT(x, Sx, (int)x.size(), fin, z, Sz, Sxz);
 	}
 }
