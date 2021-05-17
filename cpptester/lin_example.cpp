@@ -1,48 +1,43 @@
-#include "SLAMexample.h"
 #include "RelUT.h"
 #include "UT.h"
 #include <iostream>
-#include "Eigen/Dense"
-#include <chrono>
 
 using namespace RelaxedUT;
-
-typedef std::chrono::time_point<std::chrono::system_clock> Time;
-
-typedef std::chrono::microseconds DTime;
-
-DTime duration_since_epoch(const Time& t);
-
-template<class _Rep, class _Period>
-inline DTime duration_cast(const std::chrono::duration<_Rep, _Period>& in);
-
-template<class _Rep, class _Period>
-inline double duration_cast_to_sec(const std::chrono::duration<_Rep, _Period>& in);
-
-Time InitFromDurationSinceEpochInMicroSec(const long long& value);
-
-DTime InitFromDurationInMicroSec(const long long& value);
-
-Time Now();
-
-template<class _Rep, class _Period>
-inline DTime duration_cast(const std::chrono::duration<_Rep, _Period>& in) {
-	return std::chrono::duration_cast<DTime>(in);
-}
-
-template<class _Rep, class _Period>
-inline double duration_cast_to_sec(const std::chrono::duration<_Rep, _Period>& in) {
-	return duration_cast(in).count() / 1e6;
-}
-
 using namespace Eigen;
 
+// This example considers the most simple, y=x mapping where the length of vector x is 4
+
+// The original UT is used on the following implementation of the function:
+VectorXd IdentityFull(const VectorXd& a) {
+	return a;
+}
+
+// In order to show the precision of the relaxed method (by using it in a so complicated way as possible)
+// The following form of the mapping is used:
+//
+// y = A*x_lin + z(g)
+// where
+//  A = [0 0   0 0;
+//       0 0  -1 0;
+//      -1 -2 -1 0;
+//       0 0   0 1];
+//  x_lin = [x(i_lin(0)); x(i_lin(1)); x(i_lin(2)); x(i_lin(3));]; i_lin = [0 1 2 3];
+//  z(g) means [z(g(0)); z(g(1)); z(g(2)); z(g(3))]; g = [0 1 2 3];
+//  and the original z vector is
+//  z = [ eye(3,3) ] * f_nonlin
+//      [ F        ]
+//  f_nonlin = [x(0); x(1)+x(2); x(0)+2x(1)+2x(2)];
+//  this nonlinearity is described as i_nl = [0] and
+//  two groups as i1 = [1 2] with m1=[ 1 1]
+//          and i2 = [0 1 2] with m2=[1 2 2]
+//
+// The following struct initializes and stores this values for usage
 struct RelaxedIdentityUT {
 	VectorXi il, g;
 	MatrixXd A, F;
 	Eigen::SparseMatrix<double> Q, Q1;
 
-	// x -> b0
+	// z = [a(0); a(1)+a(2); a(0)+2a(1)+2a(2)]
 	static VectorXd IdentityExampleNonlinear(const VectorXd& a) {
 		VectorXd out(3);
 		out(0) = a(0);
@@ -97,10 +92,6 @@ struct RelaxedIdentityUT {
 };
 
 
-VectorXd IdentityFull(const VectorXd& a) {
-	return a;
-}
-
 int main() {
 	auto mixed_mapping = RelaxedIdentityUT();
 	Eigen::VectorXd x(4);
@@ -109,37 +100,34 @@ int main() {
 	MatrixXd Sx = MatrixXd::Identity(4, 4);
 	Sx(2, 2) = 0.2;
 
-	Eigen::VectorXd y1;
-	Eigen::MatrixXd Sy1, Sxy1;
-	long N = 1000000;
-	{
-		auto start = std::chrono::system_clock::now();
-		for (long i = 0; i < N; i++)
-			mixed_mapping.UT(x, Sx, y1, Sy1, Sxy1);
-		auto end = std::chrono::system_clock::now();
-		long dur = (long)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-		printf("new UT : %ld \n", dur / 1000);
-	}
+	// original UT method
 	Eigen::VectorXd y2;
 	Eigen::MatrixXd Sy2, Sxy2;
-	{
-		auto start = std::chrono::system_clock::now();
-		for (long i = 0; i < N; i++)
-			UT(x, Sx, IdentityFull, y2, Sy2, Sxy2);
-		auto end = std::chrono::system_clock::now();
-		long dur = (long)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-		printf("original UT : %ld \n", dur / 1000);
-	}
-	std::cout << y1 << std::endl << std::endl;
-	std::cout << y2 << std::endl << std::endl;
-	//std::cout << y1 - y2 << std::endl;
+	UT(x, Sx, IdentityFull, y2, Sy2, Sxy2);
+
+	// new UT method
+	Eigen::VectorXd y1;
+	Eigen::MatrixXd Sy1, Sxy1;
+	mixed_mapping.UT(x, Sx, y1, Sy1, Sxy1);
+	
+	std::cout << "Conidering x=[ " << x.transpose() << "], and Sx =\n[" << Sx << "]\nand identity function y=f(x)\n\n";
+
+	std::cout << "In the new method, the identity is implemented in the most complicated way, using reindexing and " <<
+		"exact subspace etc., in order to show these functions in a very simple problem.\n\n";
+
+	std::cout << "Expected value of f(x) with the new method and the original UT:\n";
+	std::cout << "[" << y1.transpose() << "]" << std::endl;
+	std::cout << "[" << y2.transpose() << "]" << std::endl << std::endl;
+	
+	std::cout << "Matrix Syy with the new method and the original UT:\n" << std::endl;
 	std::cout << Sy1 << std::endl << std::endl;
 	std::cout << Sy2 << std::endl << std::endl;
-	//std::cout << Sy1 - Sy2 << std::endl;
 
+	std::cout << "Matrix Sxy with the new method and the original UT:\n" << std::endl;
 	std::cout << Sxy1 << std::endl << std::endl;
 	std::cout << Sxy2 << std::endl << std::endl;
-	//std::cout << Sxy1 - Sxy2 << std::endl << std::endl;
 
+	std::cout << std::endl << "All of them return the same (trivial) result with numeric errors\n";
+	
 	return 0;
 }
