@@ -1,10 +1,36 @@
 #pragma once
-
-#include <iostream>
-#include "Eigen/Dense"
 #include "PartialCholevski.h"
 
-// no g and no Q
+/* \brief Adaptive extension of the relaxed UT according to MNMPES criteria
+*
+* The MNMPES criteria can be found in paper:
+* J. Dunik, M. Simandl, and O. Straka, “Unscented Kalman filter: aspects
+* and adaptive setting of scaling parameter,” IEEE Transactions on
+* Automatic Control, vol. 57, no. 9, pp. 2411–2416, 2012
+*
+* Syntax:
+*  * Considering a function y=A*x(il) + [I; F]*f(x), where
+*  - f depends only on the values of vector x with indices inl,
+* the algorithm approximates the expected value of y,
+* its covariance matrix Sy, and cross covariance matrix Sxy
+* from the expected value of x and its covariance matrix Sx
+*
+* Inputs:
+*   x: a vector of size n
+*   il: indices of values of x, the mapping depends on linearly (length: k)
+*   inl: indices of values of x, the nonlinear part depends on linearly (length: m)
+*   A: matrix of linear coefficients of size g x k
+*   F: coefficients for f(x) with size (g-l) x l
+*   Sx: a matrix (symmetric, poisitive definite) of size n x n
+*   fin: a function  z=fin(x) R^n->R^l (that can be a C callback, std::function, etc.)
+*	zmeas : the measured output of the function
+*	sfmin, sfmax, dsf : optimal scaling factor is searched on the grid [sfmin:dsf:sfmax]
+*
+* Outputs :
+*	z : a vector of size g
+*   Sz : a matrix of size g x g
+*  Sxz : a matrix of size n x g
+*/
 template <typename Func>
 void RelAUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
 	Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,

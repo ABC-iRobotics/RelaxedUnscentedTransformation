@@ -2,6 +2,8 @@
 #include <vector>
 #include <map>
 
+// Stuff to read the SLAM dataset - nothing interesting...
+
 typedef std::map<int, int> Barcodes;
 
 Barcodes readBarcodes();

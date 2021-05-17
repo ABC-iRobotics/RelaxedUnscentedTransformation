@@ -50,15 +50,11 @@ endif()
 target_include_directories(lib_relaxedUT INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../cppsource/>)
 
-add_executable(example_SLAM_OneStep AUT.h RelAUT.h SLAMmodels.cpp SLAMmodels.h SLAMexample.cpp SLAMexample.h
-		defs.h defs.cpp)
-target_link_libraries(example_SLAM_OneStep lib_relaxedUT)
-
-add_executable(example_SLAM_Simulator AUT.h RelAUT.h SLAMmodels.cpp SLAMmodels.h
-		defs.h defs.cpp Simulator.h Simulator.cpp readData.cpp readData.h)
-target_link_libraries(example_SLAM_Simulator lib_relaxedUT)
-target_compile_definitions(example_SLAM_Simulator
-			PUBLIC DATASET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/SLAM_dataset/")
+add_executable(example_SLAM AUT.h RelAUT.h SLAMmodels.cpp SLAMmodels.h
+		Simulator.h Simulator.cpp readData.cpp readData.h SLAM_example.cpp)
+target_link_libraries(example_SLAM lib_relaxedUT)
+target_compile_definitions(example_SLAM
+			PUBLIC DATASET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/")
 
 add_executable(example_precision lin_example.cpp)
 target_link_libraries(example_precision lib_relaxedUT)

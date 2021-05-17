@@ -1,16 +1,14 @@
 #include "readData.h"
-#include <iostream>
 #include <fstream>
-#include <iostream>
-#include "Eigen/Dense"
-using namespace Eigen;
+#include <string>
+#include <algorithm>
 
 Barcodes readBarcodes() {
 	Barcodes out;
 	// File pointer 
 	std::fstream fin;
 	// Open an existing file 
-	fin.open(std::string(DATASET_PATH) + "Barcodes.dat", std::ios::in);
+	fin.open(std::string(DATASET_PATH) + "SLAM_dataset/Barcodes.dat", std::ios::in);
 	if (!fin)
 		std::logic_error("File not found");
 	// Read first 4 comment rows
@@ -75,7 +73,7 @@ MeasurmentList ReadMeasurmentList(long time_start_sec, long time_start_msec, dou
 	// File pointer 
 	std::fstream fin;
 	// Open an existing file 
-	fin.open(std::string(DATASET_PATH) + "Robot1_Measurement.dat", std::ios::in);
+	fin.open(std::string(DATASET_PATH) + "SLAM_dataset/Robot1_Measurement.dat", std::ios::in);
 	if (!fin)
 		std::logic_error("File not found");
 	// Read first 4 comment rows
@@ -162,7 +160,7 @@ OdometryData ReadOdometryData(long time_start_sec, long time_start_msec, double 
 	// File pointer 
 	std::fstream fin;
 	// Open an existing file 
-	fin.open(std::string(DATASET_PATH) + "Robot1_Odometry.dat", std::ios::in);
+	fin.open(std::string(DATASET_PATH) + "SLAM_dataset/Robot1_Odometry.dat", std::ios::in);
 	if (!fin)
 		std::logic_error("File not found");
 	// Read first 4 comment rows
@@ -233,12 +231,12 @@ OdometryData ReadOdometryData(long time_start_sec, long time_start_msec, double 
 void ConvertGroundTruthData(long time_start_sec, long time_start_msec, double duration_sec) {
 	// open output file
 	std::fstream fout;
-	fout.open("groundtruth.m", std::ios::out | std::ios::trunc);
+	fout.open(std::string(DATASET_PATH) + "groundtruth.m", std::ios::out | std::ios::trunc);
 	// write path into the output file
 	{
 		// Open an existing file 
 		std::fstream fin;
-		fin.open(std::string(DATASET_PATH) + "Robot1_Groundtruth.dat", std::ios::in);
+		fin.open(std::string(DATASET_PATH) + "SLAM_dataset/Robot1_Groundtruth.dat", std::ios::in);
 		if (!fin)
 			std::logic_error("File not found");
 		// Read first 4 comment rows
@@ -306,12 +304,11 @@ void ConvertGroundTruthData(long time_start_sec, long time_start_msec, double du
 		}
 		fin.close();
 	}
-	std::cout << "path loaded\n";
 	// Write landmark ground truth into the file
 	{
 		// Open an existing file 
 		std::fstream fin;
-		fin.open(std::string(DATASET_PATH) + "Landmark_Groundtruth.dat", std::ios::in);
+		fin.open(std::string(DATASET_PATH) + "SLAM_dataset/Landmark_Groundtruth.dat", std::ios::in);
 		if (!fin)
 			std::logic_error("File not found");
 		// Read first 4 comment rows
@@ -330,8 +327,8 @@ void ConvertGroundTruthData(long time_start_sec, long time_start_msec, double du
 				// t0
 				int ID = -1;
 				while (ID == -1) {
+					getline(fin, word, ' ');
 					try {
-						getline(fin, word, ' ');
 						ID = stol(word);
 					}
 					catch (...) {
