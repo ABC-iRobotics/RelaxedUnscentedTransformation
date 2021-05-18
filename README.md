@@ -33,12 +33,12 @@ and the included documentation.
 
 ## Examples ##
 
-In the folder "cpptester", examples shows the precision, usage and benefits of the methods. The procided CMake script is able to build the VisualStudio/Makefile/etc. environment. Then the implemented cases can be checked/modified/etc.
+In the folder "cpptester", examples show the precision, usage and benefits of the methods. The provided CMake script is able to initialize the VisualStudio project/Makefile/etc. environment. Then the implemented cases can be checked/modified/etc.
 
-(Tested on Win10, Visual Studio 2017 x64, it also needs an installed Eigen package)
+(Tested on Win10, Visual Studio 2017 x64, it also needs an installed Eigen3 package)
 
 Steps of intall:
 
-- CMake: configure (set Eigen path, build folder, compiler), then generate
+- CMake: configure (set Eigen path, folder for binaries, compiler), then generate
 
-- build/modify the examples enjoy and understand
+- build/modify the examples, enjoy and understand
