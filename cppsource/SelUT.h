@@ -27,7 +27,7 @@ namespace RelaxedUnscentedTransformation {
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
 		const Eigen::VectorXi& inl, Func fin, Eigen::VectorXd& z,
-		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
+		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz, long m0 = 0);
 
 	/*! \brief Selective Unscented transformation
 	*
@@ -56,10 +56,12 @@ namespace RelaxedUnscentedTransformation {
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
 		const Eigen::VectorXi& inl, Func fin, Eigen::VectorXd& z,
-		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
+		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz, long m0) {
 		// 
 		int m = (int)inl.size();
 		int n = (int)x.size();
+		if (m0 == 0)
+			m0 = m;
 		// nonlinear dependency vector
 		Eigen::VectorXi NL = Eigen::VectorXi::Zero(n);
 		for (int i = 0; i < inl.size(); i++)
@@ -67,12 +69,12 @@ namespace RelaxedUnscentedTransformation {
 		// weights
 		//double alpha = 0.7;
 		//double lambda = alpha * alpha * m - m;
-		double lambda = 3 - m;
+		double lambda = 3 - m0;
 		if (lambda < 0)
 			lambda = 0;
-		double nl = m + lambda;
+		double nl = m0 + lambda;
 		auto sqrtnl = sqrt(nl);
-		double W0 = lambda / nl;
+		double W0 = (double)m/(double)m0 * lambda / nl;
 		//double W0cov = W0 + 1 + 2 - alpha * alpha;
 		double W0cov = W0;
 		double Wi = 0.5 / nl;
