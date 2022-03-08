@@ -157,14 +157,18 @@ void Simulator::Run(RunSetting set) {
 					// compute output for the actives
 					Eigen::VectorXd y;
 					Eigen::MatrixXd Sy, Sxy;
-					if (settings.cType == SimSettings::NewUT && !settings.useAdaptive)
+					if (settings.cType == SimSettings::NewUT) {
+					  if (!settings.useAdaptive)
 						outputUpdater.UT(actives_x_indices, x, Sx, y, Sy, Sxy);
-					if (settings.cType == SimSettings::NewUT && settings.useAdaptive)
+					  else
 						outputUpdater.AUT(actives_x_indices, x, Sx, y_meas, y, Sy, Sxy);
-					if (settings.cType == SimSettings::UT && !settings.useAdaptive)
+					}
+					if (settings.cType == SimSettings::UT) {
+					  if (!settings.useAdaptive)
 						UT(x, Sx, SLAM_output_full_fcn(actives_x_indices), y, Sy, Sxy);
-					if (settings.cType == SimSettings::UT && settings.useAdaptive)
+					  else
 						AUT(x, Sx, SLAM_output_full_fcn(actives_x_indices), y_meas, 0, 50, 0.5, y, Sy, Sxy);
+					}
 					// Add measurement noise
 					for (int i = 0; i < actives.size(); i++) {
 						Sy(2 * i, 2 * i) += settings.Sr;
