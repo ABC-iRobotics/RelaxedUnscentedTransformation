@@ -85,14 +85,15 @@ struct RelaxedIdentityUT {
 		}
 	}
 
-	void UT(const VectorXd& x, const MatrixXd& Sx, VectorXd& y, MatrixXd& Sy, MatrixXd& Sxy) {
-		RelaxedUT(A, il, RelaxedIdentityUT::IdentityExampleNonlinear, F, g, Q, Q1,
+	void UT(const VectorXd& x, const MatrixXd& Sx, VectorXd& y, MatrixXd& Sy, MatrixXd& Sxy, int Norder) {
+		RelaxedUT(A, il, RelaxedIdentityUT::IdentityExampleNonlinear, Norder, F, g, Q, Q1,
 			x, Sx, y, Sy, Sxy);
 	}
 };
 
 
 int main() {
+	int Norder = 4;
 	auto mixed_mapping = RelaxedIdentityUT();
 	Eigen::VectorXd x(4);
 	x << 0.1, 0.2, 0.3, 0.4;
@@ -103,12 +104,12 @@ int main() {
 	// original UT method
 	Eigen::VectorXd y2;
 	Eigen::MatrixXd Sy2, Sxy2;
-	UT(x, Sx, IdentityFull, y2, Sy2, Sxy2);
+	UT(x, Sx, IdentityFull, Norder, y2, Sy2, Sxy2);
 
 	// new UT method
 	Eigen::VectorXd y1;
 	Eigen::MatrixXd Sy1, Sxy1;
-	mixed_mapping.UT(x, Sx, y1, Sy1, Sxy1);
+	mixed_mapping.UT(x, Sx, y1, Sy1, Sxy1, Norder);
 	
 	std::cout << "Conidering x=[ " << x.transpose() << "], and Sx =\n[" << Sx << "]\nand identity function y=f(x)\n\n";
 

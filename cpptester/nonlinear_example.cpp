@@ -68,6 +68,7 @@ VectorXd g2(const VectorXd& x) {
 }
 
 int main (void) {
+	int Norder = 3;
 	// Deriving matrix A
 	MatrixXd A = MatrixXd::Zero(11, 6);
 	for (int i = 0; i < 6; i++)
@@ -133,8 +134,8 @@ int main (void) {
 		MatrixXd original_Sx1, original_Sx1x0, original_Sy, original_Syx1;
 		auto start = std::chrono::system_clock::now();
 		for (long i = 0; i < N_UT; i++) {
-			UT(x, S0, f, original_x1, original_Sx1, original_Sx1x0);
-			UT(original_x1, original_Sx1, g, original_y, original_Sy, original_Syx1);
+			UT(x, S0, f, Norder, original_x1, original_Sx1, original_Sx1x0);
+			UT(original_x1, original_Sx1, g, Norder, original_y, original_Sy, original_Syx1);
 		}
 		
 		auto end = std::chrono::system_clock::now();
@@ -145,8 +146,8 @@ int main (void) {
 		MatrixXd modified_Sx1, modified_Sx1x0, modified_Syx, modified_Sy;
 		start = std::chrono::system_clock::now();
 		for (long i = 0; i < N_UT; i++) {
-			RelaxedUT(A, il, f2, F, inl, x, S0, modified_x1, modified_Sx1, modified_Sx1x0);
-			RelaxedUT(C, il, g2, F, inl, modified_x1, modified_Sx1, modified_y, modified_Sy, modified_Syx);
+			RelaxedUT(A, il, f2, Norder, F, inl, x, S0, modified_x1, modified_Sx1, modified_Sx1x0);
+			RelaxedUT(C, il, g2, Norder, F, inl, modified_x1, modified_Sx1, modified_y, modified_Sy, modified_Syx);
 		}
 		end = std::chrono::system_clock::now();
 		auto dur_relaxed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

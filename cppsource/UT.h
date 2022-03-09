@@ -13,6 +13,7 @@ namespace RelaxedUnscentedTransformation {
 	*   x: a vector of size n
 	*   Sx: a matrix (symmetric, poisitive definite) of size n x n
 	*   fin: a function  z=fin(x) (that can be a C callback, std::function, etc.)
+	*   N: order of approximation (2,..,4 is allowed)
 	*
 	* Outputs:
 	*   z: a vector of size g
@@ -21,11 +22,11 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template<typename Func>
 	void UT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Func fin, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
+		Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
 
 	template<typename Func>
 	void UT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Func fin, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
-		SelUT(x, Sx, (int)x.size(), fin, z, Sz, Sxz);
+		Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
+		SelUT(x, Sx, (int)x.size(), fin, N, z, Sz, Sxz);
 	}
 }

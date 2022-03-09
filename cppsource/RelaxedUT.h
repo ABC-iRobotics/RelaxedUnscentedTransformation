@@ -23,6 +23,7 @@ namespace RelaxedUnscentedTransformation {
 	*   F: coefficients for f(x) with size (g-l) x l
 	*   Sx: a matrix (symmetric, poisitive definite) of size n x n
 	*   fin: a function  z=fin(x) R^n->R^l (that can be a C callback, std::function, etc.)
+	*   N: order of approximation (2,..,4 is allowed)
 	*
 	* Outputs:
 	*   z: a vector of size g
@@ -31,7 +32,7 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
@@ -53,6 +54,7 @@ namespace RelaxedUnscentedTransformation {
 	*   F: coefficients for f(x) with size (g-l) x l
 	*   Sx: a matrix (symmetric, poisitive definite) of size n x n
 	*   fin: a function  z=fin(x) R^n->R^l (that can be a C callback, std::function, etc.)
+	*   N: order of approximation (2,..,4 is allowed)
 	*
 	* Outputs:
 	*   z: a vector of size g
@@ -61,7 +63,7 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F,
+		Func fin, int N, const Eigen::MatrixXd& F,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
@@ -84,6 +86,7 @@ namespace RelaxedUnscentedTransformation {
 	*   F: coefficients for f(x) with size (g-l) x l
 	*   Sx: a matrix (symmetric, poisitive definite) of size n x n
 	*   fin: a function  z=fin(x) R^n->R^l (that can be a C callback, std::function, etc.)
+	*   N: order of approximation (2,..,4 is allowed)
 	*
 	* Outputs:
 	*   z: a vector of size g
@@ -92,7 +95,7 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
 
@@ -112,6 +115,7 @@ namespace RelaxedUnscentedTransformation {
 	*   F: coefficients for f(x) with size (g-l) x l
 	*   Sx: a matrix (symmetric, poisitive definite) of size n x n
 	*   fin: a function  z=fin(x) R^n->R^l (that can be a C callback, std::function, etc.)
+	*   N: order of approximation (2,..,4 is allowed)
 	*
 	* Outputs:
 	*   z: a vector of size g
@@ -120,7 +124,7 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
 
@@ -141,7 +145,7 @@ namespace RelaxedUnscentedTransformation {
 	// g and Q
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& g,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {
@@ -149,7 +153,7 @@ namespace RelaxedUnscentedTransformation {
 		Eigen::VectorXd b0;
 		Eigen::MatrixXd Sb0, Sxb0;
 		int m = (int)Q1.rows();
-		SelUT(x0, Q*S0*Q1.transpose(), m, fin, b0, Sb0, Sxb0, Q);
+		SelUT(x0, Q*S0*Q1.transpose(), m, fin, N, b0, Sb0, Sxb0, Q);
 		// Determine b related quantities
 		Eigen::VectorXd b(b0.size() + F.rows());
 		b.segment(0, b0.size()) = b0;
@@ -181,7 +185,7 @@ namespace RelaxedUnscentedTransformation {
 	// no g and Q
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F,
+		Func fin, int N, const Eigen::MatrixXd& F,
 		const Eigen::SparseMatrix<double>& Q, const Eigen::SparseMatrix<double>& Q1,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {
@@ -189,7 +193,7 @@ namespace RelaxedUnscentedTransformation {
 		Eigen::VectorXd b0;
 		Eigen::MatrixXd Sb0, Sxb0;
 		int m = (int)Q1.rows();
-		SelUT(x0, Q*S0*Q1.transpose(), m, fin, b0, Sb0, Sxb0, Q);
+		SelUT(x0, Q*S0*Q1.transpose(), m, fin, N, b0, Sb0, Sxb0, Q);
 		// Determine b related quantities
 		Eigen::VectorXd b(b0.size() + F.rows());
 		b.segment(0, b0.size()) = b0;
@@ -219,14 +223,14 @@ namespace RelaxedUnscentedTransformation {
 	// g and no Q
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {
 		// Perform UT around a
 		Eigen::VectorXd b0;
 		Eigen::MatrixXd Sb0, Sxb0;
 		int m = (int)Q1.rows();
-		SelUT(x0, S0, inl, fin, b0, Sb0, Sxb0);
+		SelUT(x0, S0, inl, fin, N, b0, Sb0, Sxb0);
 		// Determine b related quantities
 		Eigen::VectorXd b(b0.size() + F.rows());
 		b.segment(0, b0.size()) = b0;
@@ -258,14 +262,14 @@ namespace RelaxedUnscentedTransformation {
 	// no g and no Q
 	template <typename Func>
 	void RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il,
-		Func fin, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
+		Func fin, int N, const Eigen::MatrixXd& F, const Eigen::VectorXi& inl,
 		const Eigen::VectorXd& x0, const Eigen::MatrixXd& S0,
 		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy) {
 		// Perform UT around a
 		Eigen::VectorXd b0;
 		Eigen::MatrixXd Sb0, Sxb0;
 		int m = (int)inl.size();
-		SelUT(x0, S0, inl, fin, b0, Sb0, Sxb0);
+		SelUT(x0, S0, inl, fin, N, b0, Sb0, Sxb0);
 		// Determine b related quantities
 		Eigen::VectorXd b(b0.size() + F.rows());
 		b.segment(0, b0.size()) = b0;
