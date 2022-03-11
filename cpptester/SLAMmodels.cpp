@@ -58,7 +58,7 @@ SLAMStateUpdate::SLAMStateUpdate() : inl(2) {
 	inl(1) = 4;
 }
 
-void SLAMStateUpdate::UT(double Ts, double v, double omega, double Sv, double Somega, const Eigen::VectorXd & x, const Eigen::MatrixXd & Sx, Eigen::VectorXd & y, Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy) {
+void SLAMStateUpdate::UT(double Ts, double v, double omega, double Sv, double Somega, const Eigen::VectorXd & x, const Eigen::MatrixXd & Sx, Eigen::VectorXd & y, Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy, int Norder) {
 	int N = ((int)x.size() - 3) / 2;
 	// Check size of A
 	if (A.cols() != 2 * N + 3)
@@ -81,7 +81,7 @@ void SLAMStateUpdate::UT(double Ts, double v, double omega, double Sv, double So
 	Sin(0, 0) = Sv;
 	Sin(1, 1) = Somega;
 	Sin.block(2, 2, x.size(), x.size()) = Sx;
-	RelaxedUT(A, il, fin, F, inl, in, Sin, y, Sy, Sxy);
+	RelaxedUT(A, il, fin, Norder, F, inl, in, Sin, y, Sy, Sxy);
 }
 
 SLAMOutputUpdate::SLAMOutputUpdate() : il(1) {
@@ -90,7 +90,7 @@ SLAMOutputUpdate::SLAMOutputUpdate() : il(1) {
 	il[0] = 2;
 }
 
-void SLAMOutputUpdate::UT(const std::vector<int>& actives, Eigen::VectorXd & x, const Eigen::MatrixXd & Sx, Eigen::VectorXd & y, Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy) {
+void SLAMOutputUpdate::UT(const std::vector<int>& actives, Eigen::VectorXd & x, const Eigen::MatrixXd & Sx, Eigen::VectorXd & y, Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy, int Norder) {
 	// A
 	MatrixXd A = MatrixXd::Zero(2 * actives.size(), 1);
 	for (int i = 0; i < actives.size(); i++)
@@ -123,13 +123,13 @@ void SLAMOutputUpdate::UT(const std::vector<int>& actives, Eigen::VectorXd & x, 
 	// K : 0 of 2N+2 x 3
 	MatrixXd F = MatrixXd::Zero(0, 2 * actives.size());
 
-	RelaxedUT(A, il, fin, F, inl, x, Sx, y, Sy, Sxy);
+	RelaxedUT(A, il, fin, Norder, F, inl, x, Sx, y, Sy, Sxy);
 }
 
 void SLAMOutputUpdate::AUT(const std::vector<int>& actives,
 	Eigen::VectorXd & x, const Eigen::MatrixXd & Sx,
 	const Eigen::VectorXd& ymeas, Eigen::VectorXd & y,
-	Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy) {
+	Eigen::MatrixXd & Sy, Eigen::MatrixXd & Sxy, int Norder) {
 	// A
 	MatrixXd A = MatrixXd::Zero(2 * (int)actives.size(), 1);
 	for (int i = 0; i < actives.size(); i++)

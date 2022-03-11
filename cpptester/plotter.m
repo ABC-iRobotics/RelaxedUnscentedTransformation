@@ -1,7 +1,15 @@
 figure,
+subplot(1,2,1),
 plotgroundtruth
-plotsimresult('Simulator_output_UT','r')
-plotsimresult('Simulator_output_RelaxedUT','b')
+plotsimresult('Simulator_output_relaxedUT_2','r')
+plotsimresult('Simulator_output_relaxedUT_3','g')
+plotsimresult('Simulator_output_relaxedUT_4','b')
+
+subplot(1,2,2),
+plotgroundtruth
+plotsimresult('Simulator_output_UT_2','r')
+plotsimresult('Simulator_output_UT_3','g')
+plotsimresult('Simulator_output_UT_4','b')
 %%
 function plotgroundtruth
     groundtruth;

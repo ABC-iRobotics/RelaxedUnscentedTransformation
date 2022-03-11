@@ -27,7 +27,7 @@
 */
 template<typename Func>
 void AUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-	Func fin, const Eigen::VectorXd& zmeas, double sfmin, double sfmax,
+	Func fin, int Norder, const Eigen::VectorXd& zmeas, double sfmin, double sfmax,
 	double dsf, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
 	//
 	int n = (int)x.size();

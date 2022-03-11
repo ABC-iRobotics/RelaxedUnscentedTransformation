@@ -17,6 +17,7 @@ struct SimSettings {
 
 	long time_start_sec, time_start_msec; // start of the log should be simulated
 	double simulation_duration_sec; // duration of the simulation
+	int Norder;
 
 	SimSettings(long time_start_sec, long time_start_msec, double duration_sec); // Constructor
 };
@@ -57,7 +58,7 @@ class Simulator {
 	std::ofstream logfile;
 
 	// Called if new landmark was seen
-	void _registerLandMark(int barcode, double R, double phi);
+	void _registerLandMark(int barcode, double R, double phi, int Norder);
 
 	struct SimResults {
 		long Nsteps, Nmeas;

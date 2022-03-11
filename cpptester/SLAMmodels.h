@@ -14,7 +14,7 @@ public:
 
 	void UT(double Ts, double v, double omega, double Sv, double Somega,
 		const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
+		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy, int Norder);
 };
 
 struct SLAMOutputUpdate {
@@ -24,11 +24,11 @@ public:
 	SLAMOutputUpdate();
 
 	void UT(const std::vector<int>& actives, Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
+		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy, int Norder);
 
 	void AUT(const std::vector<int>& actives, Eigen::VectorXd& x,
 		const Eigen::MatrixXd& Sx, const Eigen::VectorXd& ymeas,
-		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy);
+		Eigen::VectorXd& y, Eigen::MatrixXd& Sy, Eigen::MatrixXd& Sxy, int Norder);
 };
 
 Eigen::VectorXd SLAMStateUpdateFull(const Eigen::VectorXd& a, double Ts);

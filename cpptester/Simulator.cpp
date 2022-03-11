@@ -13,7 +13,7 @@ Eigen::VectorXd computeNewLandmarkPosition(const Eigen::VectorXd & rdelta_x) {
 	return out;
 }
 
-void Simulator::_registerLandMark(int barcode, double R, double phi) {
+void Simulator::_registerLandMark(int barcode, double R, double phi, int Norder) {
 	// Add initial pose (computing its variance and covariances via UT)
 	Eigen::VectorXd xy_lm;
 	Eigen::MatrixXd Sxylm, Sx_xylm;
@@ -25,7 +25,7 @@ void Simulator::_registerLandMark(int barcode, double R, double phi) {
 	Sin(0, 0) = settings.Sr;
 	Sin(1, 1) = settings.Sphi;
 	Sin.block(2, 2, x.size(), x.size()) = Sx;
-	UT(in, Sin, computeNewLandmarkPosition, xy_lm, Sxylm, Sx_xylm);
+	UT(in, Sin, computeNewLandmarkPosition, Norder, xy_lm, Sxylm, Sx_xylm);
 	Eigen::VectorXd newx(x.size() + 2);
 	newx.segment(0, x.size()) = x;
 	newx.segment(x.size(), 2) = xy_lm;
@@ -43,7 +43,7 @@ void Simulator::_Step(double dT_sec, RunSetting set) {
 	Eigen::VectorXd y;
 	Eigen::MatrixXd Sy, Syx0;
 	if (settings.cType == SimSettings::NewUT) {
-		stateUpdater.UT(dT_sec, v, omega, settings.Sv, settings.Somega, x, Sx, y, Sy, Syx0);
+		stateUpdater.UT(dT_sec, v, omega, settings.Sv, settings.Somega, x, Sx, y, Sy, Syx0, settings.Norder);
 		x = y;
 		Sx = Sy;
 	}
@@ -56,7 +56,8 @@ void Simulator::_Step(double dT_sec, RunSetting set) {
 		Sin(0, 0) = settings.Sv;
 		Sin(1, 1) = settings.Somega;
 		Sin.block(2, 2, x.size(), x.size()) = Sx;
-		UT(in, Sin, [dT_sec](const Eigen::VectorXd& in)->Eigen::VectorXd {return SLAMStateUpdateFull(in, dT_sec); }, y, Sy, Syx0);
+		UT(in, Sin, [dT_sec](const Eigen::VectorXd& in)->Eigen::VectorXd {return SLAMStateUpdateFull(in, dT_sec); },
+		  settings.Norder, y, Sy, Syx0);
 		x = y;
 		Sx = Sy;
 	}
@@ -77,10 +78,7 @@ odometryData(ReadOdometryData(set.time_start_sec, set.time_start_msec, set.simul
 	measList = ReadMeasurmentList(set.time_start_sec, set.time_start_msec, set.simulation_duration_sec, barcodes);
 	// create output file
 	std::string filename = std::string(DATASET_PATH) + "Simulator_output_";
-	if (settings.cType == settings.UT)
-		filename += "UT";
-	else
-		filename += "RelaxedUT";
+	filename += set.name;
 	logfile.open(filename + ".m", std::ios::out | std::ios::trunc);
 }
 
@@ -140,7 +138,7 @@ void Simulator::Run(RunSetting set) {
 						}
 					if (j == -1) {
 						if (settings.enableAddingLandmarks)
-							_registerLandMark(measList[i].barcode, measList[i].R, measList[i].phi); // if couldnt find
+							_registerLandMark(measList[i].barcode, measList[i].R, measList[i].phi, settings.Norder); // if couldnt find
 					}
 					else { //if found save
 						actives.push_back(i);
@@ -159,15 +157,15 @@ void Simulator::Run(RunSetting set) {
 					Eigen::MatrixXd Sy, Sxy;
 					if (settings.cType == SimSettings::NewUT) {
 					  if (!settings.useAdaptive)
-						outputUpdater.UT(actives_x_indices, x, Sx, y, Sy, Sxy);
+						outputUpdater.UT(actives_x_indices, x, Sx, y, Sy, Sxy, settings.Norder);
 					  else
-						outputUpdater.AUT(actives_x_indices, x, Sx, y_meas, y, Sy, Sxy);
+						outputUpdater.AUT(actives_x_indices, x, Sx, y_meas, y, Sy, Sxy, settings.Norder);
 					}
 					if (settings.cType == SimSettings::UT) {
 					  if (!settings.useAdaptive)
-						UT(x, Sx, SLAM_output_full_fcn(actives_x_indices), y, Sy, Sxy);
+						UT(x, Sx, SLAM_output_full_fcn(actives_x_indices), settings.Norder, y, Sy, Sxy);
 					  else
-						AUT(x, Sx, SLAM_output_full_fcn(actives_x_indices), y_meas, 0, 50, 0.5, y, Sy, Sxy);
+						AUT(x, Sx, SLAM_output_full_fcn(actives_x_indices), settings.Norder, y_meas, 0, 50, 0.5, y, Sy, Sxy);
 					}
 					// Add measurement noise
 					for (int i = 0; i < actives.size(); i++) {

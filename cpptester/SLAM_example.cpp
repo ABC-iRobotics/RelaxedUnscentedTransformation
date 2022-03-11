@@ -12,6 +12,8 @@
 //  - Second time, the computation time is measured and comparised.
 //
 int main(void) {
+	auto Norder = { 2,3,4 };
+
 	// Init measurement data
 	long time_start_sec = 1248272272, time_start_msec = 841;
 	double simulation_duration_sec = 80;
@@ -19,18 +21,20 @@ int main(void) {
 	ConvertGroundTruthData(time_start_sec, time_start_msec, simulation_duration_sec);
 
 	// Perform simulations for UT and relaxed UT cases
+	for (auto NorderIt : Norder)
 	{
+		set.Norder = NorderIt;
 		set.enableAddingLandmarks = true;
 		set.enableKalmanFiltering = true;
 		set.useAdaptive = false;
 		for (int i = 0; i < 2; i++) {
 			if (i == 0) {
-				set.name = "result_with_UT";
+				set.name = "UT_" + std::to_string(set.Norder);
 				set.cType = SimSettings::UT;
 				std::cout << "Traditional UT:\n";
 			}
 			else {
-				set.name = "newUT_with_relaxedUT";
+				set.name = "relaxedUT_" + std::to_string(set.Norder);
 				set.cType = SimSettings::NewUT;
 				std::cout << "Relaxed UT:\n";
 			}
