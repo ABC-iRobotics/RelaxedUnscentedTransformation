@@ -1,5 +1,3 @@
-#pragma once
-
 #include "RelaxedUT.h"
 #include <Eigen/QR>
 
