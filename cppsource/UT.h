@@ -22,11 +22,11 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template<typename Func>
 	void UT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
+		Func fin, const UTSettings& settings, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
 
 	template<typename Func>
 	void UT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
-		SelUT(x, Sx, (int)x.size(), fin, N, z, Sz, Sxz);
+		Func fin, const UTSettings& settings, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
+		SelUT(x, Sx, (int)x.size(), fin, settings, z, Sz, Sxz);
 	}
 }

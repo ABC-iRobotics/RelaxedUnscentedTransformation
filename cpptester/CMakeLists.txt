@@ -59,6 +59,9 @@ target_compile_definitions(example_SLAM
 add_executable(example_precision lin_example.cpp)
 target_link_libraries(example_precision lib_relaxedUT)
 
+add_executable(example_Norder Norder_example.cpp RMSE.cpp RMSE.h)
+target_link_libraries(example_Norder lib_relaxedUT)
+
 add_executable(example_nonlinear nonlinear_example.cpp)
 target_link_libraries(example_nonlinear lib_relaxedUT)
 

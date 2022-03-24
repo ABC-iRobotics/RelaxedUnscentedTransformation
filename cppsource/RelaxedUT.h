@@ -229,7 +229,7 @@ namespace RelaxedUnscentedTransformation {
 		// Perform UT around a
 		Eigen::VectorXd b0;
 		Eigen::MatrixXd Sb0, Sxb0;
-		int m = (int)Q1.rows();
+		//int m = (int)Q1.rows();
 		SelUT(x0, S0, inl, fin, N, b0, Sb0, Sxb0);
 		// Determine b related quantities
 		Eigen::VectorXd b(b0.size() + F.rows());

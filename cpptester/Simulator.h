@@ -7,10 +7,10 @@ struct SimSettings {
 	bool enableAddingLandmarks = true; // if barcodes are added from the measurements
 	bool enableKalmanFiltering = true; // if Kalman-filtering is applied to correct the barcode positions
 	
-	double Sr = 1e-2; // variance of measured distance
+	double Sr = 10e-2; // variance of measured distance
 	double Sphi = 5e-3; // variance of measured angle
 	double Sv = 8e-2; // variance of velocity comes from odometry
-	double Somega = 10e-2; // variance of angular velocity comes from odometry
+	double Somega = 20e-2; // variance of angular velocity comes from odometry
 	enum ComputationType { UT, NewUT } cType = UT; // if original or relaxed UT will be applied
 	bool useAdaptive = false; // if adaptive method should be used
 	std::string name; // name of the settings

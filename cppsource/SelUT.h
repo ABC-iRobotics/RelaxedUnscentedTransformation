@@ -3,8 +3,37 @@
 #include <Eigen/SparseCore>
 #include "index_selector.h"
 #include "PartialCholevski.h"
+#include <iostream>
 
 namespace RelaxedUnscentedTransformation {
+
+  struct UTSettings {
+	int Norder;
+	std::vector<double> kappa;
+	std::vector<double> alpha;
+
+	std::vector<std::vector<Eigen::MatrixXd>> U;
+
+	void initU(std::vector<double> phi,int nMax) {
+	  for (int N = 0; N < Norder - 1; N++) {
+		std::vector<Eigen::MatrixXd> temp;
+		for (int n = 0; n < nMax; n++) {
+		  Eigen::MatrixXd out = Eigen::MatrixXd::Identity(n, n);
+		  double c = cos(phi[N]), s = sin(phi[N]);
+		  for (int i = 0; i < n - 1; i++) {
+			Eigen::MatrixXd temp = Eigen::MatrixXd::Identity(n, n);
+			temp(i, i) = c;
+			temp(i, i + 1) = -s;
+			temp(i + 1, i) = s;
+			temp(i + 1, i + 1) = c;
+			out = out * temp;
+		  }
+		  temp.push_back(out);
+		}
+		U.push_back(temp);
+	  }
+	}
+  };
 
 	/*! \brief Selective Unscented transformation
 	*
@@ -27,7 +56,7 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-	  const Eigen::VectorXi& inl, Func fin, int N,
+	  const Eigen::VectorXi& inl, Func fin, const UTSettings& settings,
 	  Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz);
 
 	/*! \brief Selective Unscented transformation
@@ -52,51 +81,29 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx, int m,
-	  Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz,
-	  Eigen::SparseMatrix<double> Q = Eigen::SparseMatrix<double>(0, 0));
+	  Func fin, const UTSettings& settings, Eigen::VectorXd& z, Eigen::MatrixXd& Sz,
+	  Eigen::MatrixXd& Sxz, Eigen::SparseMatrix<double> Q = Eigen::SparseMatrix<double>(0, 0));
 
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//////// Implementations
 	//////////////////////////////////////////////////////////////////////////////////
 
-	inline double kappa_abs(int N, int l) {
-	  switch (N) {
-	  case 2:
-		if (l == 0)
-		  return 3;
-		break;
-	  case 3:
-		switch (l) {
-		case 0:
-		  return 5.45;
-		case 1:
-		  return 0.55;
-		}
-	  case 4:
-		switch (l) {
-		case 0:
-		  return 6.894;
-		case 1:
-		  return 1.8658;
-		case 2:
-		  return 1.8658;
-		}
-	  }
-	  throw std::runtime_error("kappa_abs(): Not allowed inputs");
-	  return 0;
-	}
+#define nMax 20
+
+	
 
 	template<typename Func>
 	void SelUTCore(const Eigen::VectorXd& x, const Eigen::MatrixXd& L,
-	  Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz,
+	  Func fin, const UTSettings& settings, Eigen::VectorXd& z, Eigen::MatrixXd& Sz,
 	  Eigen::MatrixXd& Sxz) {
+	  int N = settings.Norder;
 	  int m = L.cols();
 	  int n = L.rows();
 	  // Scale offsets
 	  std::vector<Eigen::MatrixXd> Lscaled;
 	  for (int l = 0; l < N - 1; l++)
-		Lscaled.push_back(L * sqrt(kappa_abs(N, l)));
+		Lscaled.push_back(L * sqrt(settings.kappa[l]) * settings.U[l][n]);
 	  // Map the sigma points
 	  std::vector<std::vector<Eigen::VectorXd>> Zi;
 	  Zi.push_back({ fin(x) });
@@ -112,7 +119,7 @@ namespace RelaxedUnscentedTransformation {
 	  Eigen::VectorXd W(N);
 	  W[0] = 0;
 	  for (int l = 1; l < N; l++) // W0 will be computed later
-		W[l] = 0.5 / (double(N) - 1) / kappa_abs(N, l-1);
+		W[l] = 0.5 / (double(N) - 1) / settings.kappa[l - 1] / settings.alpha[l-1];
 	  W[0] = 1. - W.sum() * 2. * double(m);
 	  // Expected z value
 	  int g = (int)Zi[0][0].size();
@@ -124,7 +131,7 @@ namespace RelaxedUnscentedTransformation {
 		z += W[a] * za;
 	  }
 	  // Sigma_z
-	  if (W[0] > 0) {
+	  if (W[0] > 0) { // todo check if it can be added - even with a negative coefficient?
 		auto temp = Zi[0][0] - z;
 		Sz = W[0] * temp * temp.transpose();
 	  }
@@ -150,7 +157,7 @@ namespace RelaxedUnscentedTransformation {
 
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx,
-		const Eigen::VectorXi& inl, Func fin, int N, Eigen::VectorXd& z,
+		const Eigen::VectorXi& inl, Func fin, const UTSettings& settings, Eigen::VectorXd& z,
 		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz) {
 		int n = (int)x.size();
 		// nonlinear dependency vector
@@ -159,13 +166,13 @@ namespace RelaxedUnscentedTransformation {
 			NL[inl[i]] = 1;
 		// partial Choleski
 		Eigen::MatrixXd L = PartialChol(Sx, NL);
-		SelUTCore(x, L, fin, N, z, Sz, Sxz);
+		SelUTCore(x, L, fin, settings, z, Sz, Sxz);
 	}
 
 	template<typename Func>
 	void SelUT(const Eigen::VectorXd& x, const Eigen::MatrixXd& Sx, int m,
-		Func fin, int N, Eigen::VectorXd& z, Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz,
-		Eigen::SparseMatrix<double> Q) {
+		Func fin, const UTSettings& settings, Eigen::VectorXd& z,
+		Eigen::MatrixXd& Sz, Eigen::MatrixXd& Sxz, Eigen::SparseMatrix<double> Q) {
 		int n = (int)x.size();
 		// nonlinear dependency vector
 		Eigen::VectorXi NL = Eigen::VectorXi::Ones(n);
@@ -175,6 +182,6 @@ namespace RelaxedUnscentedTransformation {
 		Eigen::MatrixXd L = PartialChol(Sx, NL);
 		if (Q.rows() > 0)
 		  L = Q.transpose() * L;
-		SelUTCore(x, L, fin, N, z, Sz, Sxz);
+		SelUTCore(x, L, fin, settings, z, Sz, Sxz);
 	}
 }
