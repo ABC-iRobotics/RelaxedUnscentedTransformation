@@ -7,6 +7,5 @@ namespace RelaxedUnscentedTransformation {
 	 *
 	 * Based on the Cholevski-Crout algrithm
 	 */
-	Eigen::MatrixXd PartialChol(Eigen::MatrixXd a, Eigen::VectorXi v);
-
+	Eigen::MatrixXd PartialChol(const Eigen::MatrixXd& a, const Eigen::VectorXi& v);
 }

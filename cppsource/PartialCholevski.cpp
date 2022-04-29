@@ -4,7 +4,7 @@ using namespace RelaxedUnscentedTransformation;
 
 typedef Eigen::LLT<Eigen::MatrixXd>::RealScalar Real;
 
-Eigen::MatrixXd RelaxedUnscentedTransformation::PartialChol(Eigen::MatrixXd a, Eigen::VectorXi v) {
+Eigen::MatrixXd RelaxedUnscentedTransformation::PartialChol(const Eigen::MatrixXd& a, const Eigen::VectorXi& v) {
 	const Eigen::Index n = a.rows();
 	double eps = a.trace()*1e-10;
 	const Eigen::Index nOut = v.sum();
