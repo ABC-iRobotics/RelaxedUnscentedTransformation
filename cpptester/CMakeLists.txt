@@ -65,3 +65,5 @@ target_link_libraries(example_Norder lib_relaxedUT)
 add_executable(example_nonlinear nonlinear_example.cpp)
 target_link_libraries(example_nonlinear lib_relaxedUT)
 
+add_executable(INES2022 INES_lib.h INES_lib.cpp INES_main.cpp UTComponents.cpp UTComponents.h)
+target_link_libraries(INES2022 lib_relaxedUT)
