@@ -2,6 +2,8 @@
 #include "UTComponents.h"
 #include "index_selector.h"
 
+#include <random>
+
 using namespace UTComponents;
 using namespace RelaxedUnscentedTransformation;
 
@@ -175,4 +177,13 @@ ValWithCov UTComponents::MixedLinSourcesWithReordering(const ValWithCov& x0_in, 
   Eigen::MatrixXd Sy = Sbgbg + A * MatrixRowSelect(Sxy, il) + MatrixColumnSelect(Sxbg.transpose(), il) * At;
 
   return ValWithCov(y, Sy, Sxy);
+}
+
+Eigen::VectorXd RandomVector(const Eigen::MatrixXd& S) {
+	static std::default_random_engine generator;
+	static std::normal_distribution<double> distribution(0, 1);
+	Eigen::VectorXd out(S.cols());
+	for (int i = 0; i < S.cols(); i++)
+		out(i) = sqrt(S(i, i)) * distribution(generator);
+	return out;
 }

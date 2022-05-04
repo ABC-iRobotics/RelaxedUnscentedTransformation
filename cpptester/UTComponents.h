@@ -66,6 +66,8 @@ struct ValWithCov {
   ValWithCov(const Eigen::VectorXd y_, const Eigen::MatrixXd& Sy_) : y(y_), Sy(Sy_) {};
 };
 
+Eigen::VectorXd RandomVector(const Eigen::MatrixXd& S);
+
 namespace UTComponents {
 
   Eigen::MatrixXd PartialChol(const Eigen::MatrixXd& a, const Eigen::VectorXi& inl);
