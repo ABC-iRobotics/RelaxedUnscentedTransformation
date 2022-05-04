@@ -53,10 +53,19 @@ Eigen::MatrixXd getSv() {
   return Eigen::MatrixXd::Identity(6, 6) * 0.5;
 }
 
+#define useHO true
+
 class Filter {
+public:
+  struct FilterSettings {
+	bool useRelaxed;
+	std::vector<double> alpha;
+	FilterSettings(bool useRelaxed_, std::vector<double> alpha_) :
+	  useRelaxed(useRelaxed_), alpha(alpha_) {};
+  };
+
 private:
-  bool useRelaxed;
-  std::vector<double> alpha;
+  FilterSettings settings;
   ValWithCov x_est;
 
   struct Sim {
@@ -66,31 +75,22 @@ private:
 
   std::vector<Sim> RMSE;
 
+  StatePredictor state;
+  OutputPredictor output;
+
 public:
-  struct FilterSettings {
-	bool useRelaxed;
-	std::vector<double> alpha;
-	FilterSettings(bool useRelaxed_, std::vector<double> alpha_) :
-	  useRelaxed(useRelaxed_), alpha(alpha_) {};
-  };
+ 
 
-  Filter(const FilterSettings& set) :
-	useRelaxed(set.useRelaxed), alpha(set.alpha), x_est({}, {}) {}
+  Filter(const FilterSettings& set, StatePredictor state_, OutputPredictor output_) :
+	settings(set), x_est({}, {}), state(state_), output(output_) {}
 
-  void Step(double dT, const Eigen::VectorXd& y_meas) {
-	static auto Sw = getSw();
-	static auto Sv = getSv();
+  void Step(double dT, const Eigen::VectorXd& y_meas,
+	const Eigen::MatrixXd& Sw, const Eigen::MatrixXd& Sv) {
 	/////////////// Filtering ////////////////
 	  // Prediction step
 	ValWithCov y_est({}, {});
-	if (useRelaxed) {
-	  x_est = RelaxedUTN_INES1(dT, x_est, Sw, alpha);
-	  y_est = RelaxedUTN_INES2(x_est, Sv, alpha);
-	}
-	else {
-	  x_est = FullUTN_INES1(dT, x_est, Sw, alpha);
-	  y_est = FullUTN_INES2(x_est, Sv, alpha);
-	}
+	x_est = state(dT, x_est, Sw, settings.alpha, settings.useRelaxed, useHO);
+	y_est = output(x_est, Sv, settings.alpha, settings.useRelaxed, useHO);
 	/*
 	std::cout << "x_true: " << x_true.transpose() << std::endl <<
 	  " x_est " << x_est.y.transpose() << std::endl;
@@ -131,9 +131,8 @@ public:
 
   double getRMSE() const {
 	double out = 0;
-	for (auto& it : RMSE) {
+	for (auto& it : RMSE)
 	  out += sqrt(it.RMSE / double(it.n));
-	}
 	return out / double(RMSE.size());
   }
 };
@@ -142,7 +141,7 @@ std::vector<double> RMSE(int N, int K, const std::vector<Filter::FilterSettings>
   // Initialize filters
   std::vector<Filter> filters;
   for (auto& it : set)
-	filters.push_back({ it });
+	filters.push_back({ it ,UT_INES1, UT_INES2 });
   // Covariance matrices
   auto Sw = getSw();
   auto Sv = getSv();
@@ -164,7 +163,7 @@ std::vector<double> RMSE(int N, int K, const std::vector<Filter::FilterSettings>
 	  // Simulation: compute z
 	  Eigen::VectorXd y_meas = UT_INES::TrueOutput(x_true) + GetInput(double(k) * dT, Sv);
 	  for (auto& it : filters) {
-		it.Step(dT, y_meas);
+		it.Step(dT, y_meas, Sw, Sv);
 		it.computeRMSE(x_true);
 	  }
 	}
@@ -177,7 +176,7 @@ std::vector<double> RMSE(int N, int K, const std::vector<Filter::FilterSettings>
 
 int main() {
 
-  auto RMSE_ = RMSE(1, 10000, { {false,{1}} });
+  auto RMSE_ = RMSE(1, 100, { {false,{1}} });
 
   for (auto it: RMSE_)
 	std::cout << it << std::endl;
