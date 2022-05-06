@@ -7,8 +7,8 @@ void UT_INES::Filter::Step(double dT, const Eigen::VectorXd& y_meas, const Eigen
   /////////////// Filtering ////////////////
   // Prediction step
   ValWithCov y_est({}, {});
-  x_est = model->UT_INES1(dT, x_est, Sw, settings.alpha, settings.useRelaxed, settings.useHO);
-  y_est = model->UT_INES2(x_est, Sv, settings.alpha, settings.useRelaxed, settings.useHO);
+  x_est = model->UT_StateUpdate(dT, x_est, Sw, settings.alpha, settings.useRelaxed, settings.useHO);
+  y_est = model->UT_OutputUpdate(x_est, Sv, settings.alpha, settings.useRelaxed, settings.useHO);
   /*
   std::cout << "x_true: " << x_true.transpose() << std::endl <<
   " x_est " << x_est.y.transpose() << std::endl;
@@ -74,9 +74,9 @@ std::vector<double> UT_INES::RMSE(double dT, int N, int K, const std::vector<Fil
 	for (int k = 0; k < K; k++) {
 	  //////////////// Simulation ////////////////
 	  // Simulation: update x
-	  x_true = model->StateUpdate(x_true, model->GetInput(double(k) * dT), dT);
+	  x_true = model->StateUpdate_Full(x_true, model->GetInput(double(k) * dT), dT);
 	  // Simulation: compute z
-	  Eigen::VectorXd y_meas = model->TrueOutput(x_true) + RandomVector(Sv);
+	  Eigen::VectorXd y_meas = model->TrueOutput_Full(x_true) + RandomVector(Sv);
 	  for (auto& it : filters) {
 		it.Step(dT, y_meas, Sw, Sv);
 		it.computeRMSE(x_true);

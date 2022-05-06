@@ -3,20 +3,20 @@
 
 using namespace UT_INES;
 
-Eigen::MatrixXd UT_INES::Model2DAbsRel::getA1(double Ts) const {
+Eigen::MatrixXd UT_INES::Model2DAbsRel::getA_SU(double Ts) const {
   Eigen::MatrixXd A = Eigen::MatrixXd::Identity(11, 11);
   A(0, 7) = Ts;
   return A;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getil1() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getil_SU() const {
   Eigen::VectorXi il(11);
   for (int i = 0; i < 11; i++)
 	il[i] = i;
   return il;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getinl1() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getinl_SU() const {
   Eigen::VectorXi inl = Eigen::VectorXi::Zero(3);
   inl(0) = 0;
   inl(1) = 1;
@@ -24,7 +24,7 @@ Eigen::VectorXi UT_INES::Model2DAbsRel::getinl1() const {
   return inl;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getg1() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getg_SU() const {
   Eigen::VectorXi g = Eigen::VectorXi::Zero(11);
   g(5) = 1;
   g(6) = 2;
@@ -33,11 +33,11 @@ Eigen::VectorXi UT_INES::Model2DAbsRel::getg1() const {
   return g;
 }
 
-Eigen::MatrixXd UT_INES::Model2DAbsRel::getF1() const {
+Eigen::MatrixXd UT_INES::Model2DAbsRel::getF_SU() const {
   return Eigen::MatrixXd(0, 4);
 }
 
-Eigen::VectorXd UT_INES::Model2DAbsRel::f1(const Eigen::VectorXd& x, double dT) const {
+Eigen::VectorXd UT_INES::Model2DAbsRel::f_SU(const Eigen::VectorXd& x, double dT) const {
   double phi = x(0);
   double Dphi = x(4);
   double v = x(1);
@@ -49,7 +49,7 @@ Eigen::VectorXd UT_INES::Model2DAbsRel::f1(const Eigen::VectorXd& x, double dT) 
   return out;
 }
 
-Eigen::VectorXd UT_INES::Model2DAbsRel::f1full(const Eigen::VectorXd& x, double dT) const {
+Eigen::VectorXd UT_INES::Model2DAbsRel::ffull_SU(const Eigen::VectorXd& x, double dT) const {
   double phi = x(0);
   double v = x(1);
   double Dphi = x(4);
@@ -64,7 +64,7 @@ Eigen::VectorXd UT_INES::Model2DAbsRel::f1full(const Eigen::VectorXd& x, double 
 
 //TODO: not only for wa, weps?
 
-Eigen::MatrixXd UT_INES::Model2DAbsRel::getB1(double dT) const {
+Eigen::MatrixXd UT_INES::Model2DAbsRel::getB_SU(double dT) const {
   Eigen::MatrixXd B = Eigen::MatrixXd::Zero(11, 8);
   B(1, 0) = dT;
   B(2, 2) = dT;
@@ -77,7 +77,7 @@ Eigen::MatrixXd UT_INES::Model2DAbsRel::getB1(double dT) const {
   return B;
 }
 
-Eigen::MatrixXd UT_INES::Model2DAbsRel::getA2() const {
+Eigen::MatrixXd UT_INES::Model2DAbsRel::getA_OU() const {
   Eigen::MatrixXd A = Eigen::MatrixXd::Zero(6, 8);
   A(0, 2) = 1;
   A(1, 3) = 1;
@@ -92,7 +92,7 @@ Eigen::MatrixXd UT_INES::Model2DAbsRel::getA2() const {
   return A;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getil2() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getil_OU() const {
   Eigen::VectorXi il(8);
   il(0) = 0;
   il(1) = 4;
@@ -105,7 +105,7 @@ Eigen::VectorXi UT_INES::Model2DAbsRel::getil2() const {
   return il;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getinl2() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getinl_OU() const {
   Eigen::VectorXi inl = Eigen::VectorXi::Zero(3);
   inl(0) = 0;
   inl(1) = 2;
@@ -113,18 +113,18 @@ Eigen::VectorXi UT_INES::Model2DAbsRel::getinl2() const {
   return inl;
 }
 
-Eigen::VectorXi UT_INES::Model2DAbsRel::getg2() const {
+Eigen::VectorXi UT_INES::Model2DAbsRel::getg_OU() const {
   Eigen::VectorXi g = Eigen::VectorXi::Zero(6);
   g(0) = 1;
   g(1) = 2;
   return g;
 }
 
-Eigen::MatrixXd UT_INES::Model2DAbsRel::getF2() const {
+Eigen::MatrixXd UT_INES::Model2DAbsRel::getF_OU() const {
   return Eigen::MatrixXd(0, 2);
 }
 
-Eigen::VectorXd UT_INES::Model2DAbsRel::f2(const Eigen::VectorXd& x) const {
+Eigen::VectorXd UT_INES::Model2DAbsRel::f_OU(const Eigen::VectorXd& x) const {
   double phi = x(0);
   double xc = x(2);
   double yc = x(3);
@@ -134,7 +134,7 @@ Eigen::VectorXd UT_INES::Model2DAbsRel::f2(const Eigen::VectorXd& x) const {
   return out;
 }
 
-Eigen::VectorXd UT_INES::Model2DAbsRel::f2full(const Eigen::VectorXd& x) const {
+Eigen::VectorXd UT_INES::Model2DAbsRel::ffull_OU(const Eigen::VectorXd& x) const {
   double phi = x(0);
   double xc = x(2);
   double yc = x(3);
