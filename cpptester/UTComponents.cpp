@@ -3,7 +3,7 @@
 #include "index_selector.h"
 
 #include <random>
-
+#include <iostream>
 using namespace UTComponents;
 using namespace RelaxedUnscentedTransformation;
 
@@ -31,6 +31,9 @@ Eigen::MatrixXd UTComponents::PartialChol(const Eigen::MatrixXd& a, const Eigen:
 	  errormsg << "The value " << temp << " is negative, when matrix (" << a <<
 		") was  decomposed by column (" << inl.transpose() <<
 		"). The matrix is not positive definite or numerical error.";
+	  std::cout << "The value " << temp << " is negative, when matrix (" << a <<
+		") was  decomposed by column (" << inl.transpose() <<
+		"). The matrix is not positive definite or numerical error." << std::endl;
 	  throw std::runtime_error(errormsg.str());
 	}
 	out(j, i) = sqrtl(temp);

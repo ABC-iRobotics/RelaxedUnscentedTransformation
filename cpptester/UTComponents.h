@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 #include "Eigen/Dense"
 
 struct MultiScaledUTSettings {
@@ -99,6 +100,7 @@ namespace UTComponents {
 	double V1 = W1;
 	double W0 = 1. - W1 * 2. * double(m);
 	double V0 = W0 + 3 - settings.kappa / m;
+	std::cout << V0 << std::endl;
 	// Expected z value
 	int g = (int)Z0.size();
 	Eigen::VectorXd z = W0 * Z0;
@@ -147,30 +149,30 @@ namespace UTComponents {
 		scaledxdiffs[N].push_back(xdiffs[i] * sqrt(settings.kappa[N]));// *settings.U[N][n]);
 	}
 	// Map the sigma points
+	Eigen::VectorXd Z0 = fin(x);
 	std::vector<std::vector<Eigen::VectorXd>> Zi;
-	Zi.push_back({ fin(x) });
 	for (int N = 0; N < Nmax; N++) {
 	  Zi.push_back({});
 	  for (int b = 0; b < m; b++)
-		Zi[N + 1].push_back(fin(x - scaledxdiffs[N][b]));
+		Zi[N].push_back(fin(x - scaledxdiffs[N][b]));
 	  for (int b = 0; b < m; b++)
-		Zi[N + 1].push_back(fin(x + scaledxdiffs[N][b]));
+		Zi[N].push_back(fin(x + scaledxdiffs[N][b]));
 	}
 	// Compute weights
-	Eigen::VectorXd W(Nmax + 1);
-	W[0] = 0;
-	for (int l = 1; l < Nmax + 1; l++) // W0 will be computed later
-	  W[l] = 0.5 / double(Nmax) / settings.kappa[l - 1] / settings.alpha[l - 1];
-	W[0] = 1. - W.sum() * 2. * double(m);
+	Eigen::VectorXd W(Nmax);
+	for (int l = 0; l < Nmax; l++) // W0 will be computed later
+	  W[l] = 0.5 / double(Nmax) / settings.kappa[l] / settings.alpha[l];
+	double W0 = 1. - W.sum() * 2. * double(m);
 	auto V = W;
 	double kappa_sum = 0;
 	for (auto it : settings.kappa)
 	  kappa_sum += it;
-	V[0] += 3 - kappa_sum / m;
+	double V0 = W0 + 3 - kappa_sum / m *0;
+	std::cout << V0 << std::endl;
 	// Expected z value
-	int g = (int)Zi[0][0].size();
-	Eigen::VectorXd z = W[0] * Zi[0][0];
-	for (int a = 1; a < Zi.size(); a++) {
+	int g = (int)Z0.size();
+	Eigen::VectorXd z = W0 * Z0;
+	for (int a = 0; a < Zi.size(); a++) {
 	  Eigen::VectorXd za = Eigen::VectorXd::Zero(g);
 	  for (int b = 0; b < Zi[a].size(); b++)
 		za += Zi[a][b];
@@ -179,8 +181,8 @@ namespace UTComponents {
 	// Sigma_z
 	Eigen::MatrixXd Sz;
 	{
-	  Eigen::VectorXd temp = Zi[0][0] - z;
-	  Sz = V[0] * temp * temp.transpose()*0;
+	  Eigen::VectorXd temp = Z0 - z;
+	  Sz = V0 * temp * temp.transpose()*0;
 	}
 	for (int a = 1; a < Zi.size(); a++) {
 	  Eigen::MatrixXd Sz_a = Eigen::MatrixXd::Zero(g, g);
@@ -192,10 +194,10 @@ namespace UTComponents {
 	}
 	// Sigma _zx
 	Eigen::MatrixXd Sxz = Eigen::MatrixXd::Zero(n, g);
-	for (int a = 1; a < Zi.size(); a++) {
+	for (int a = 0; a < Zi.size(); a++) {
 	  Eigen::MatrixXd Sxz_a = Eigen::MatrixXd::Zero(n, g);
 	  for (int b = 0; b < m; b++)
-		Sxz_a += scaledxdiffs[a - 1][b] * (Zi[a][b + m] - Zi[a][b]).transpose();
+		Sxz_a += scaledxdiffs[a][b] * (Zi[a][b + m] - Zi[a][b]).transpose();
 	  Sxz += Sxz_a * V[a];
 	}
 	return ValWithCov(z, Sz, Sxz);
