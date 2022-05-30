@@ -35,7 +35,7 @@ double noise() {
 double RMSE(int N, int K, const UTSettings& settings) {
   double out = 0;
   for (int n = 0; n < N; n++) {
-	
+	double out_ = 0;
 	// Variable for simulation
 	double x_true = -1;
 	// Variables for filtering
@@ -101,13 +101,14 @@ double RMSE(int N, int K, const UTSettings& settings) {
 		if (Sx_estimated < 0.01)
 		  Sx_estimated = 0.01;
 
-		out += (x_estimated - x_true) * (x_estimated - x_true);
+		out_ += (x_estimated - x_true) * (x_estimated - x_true);
 
 		//printf("x_true: %f; x_estimated: %f, P_estimated: %f\n", x_true, x_estimated, Sx_estimated);
 	  }
 	}
+	out += sqrt(out_ / double(K));
   }
-  return sqrt(out / double(K)) / double(N);
+  return out / double(N);
 }
 
 
