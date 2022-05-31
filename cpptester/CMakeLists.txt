@@ -19,17 +19,20 @@ find_package(Eigen3 REQUIRED)
 
 # Add all header and cpp files in the directory to the project
 set (HEADERS
-	../cppsource/index_selector.h
-	../cppsource/UT.h
-	../cppsource/SelUT.h
-	../cppsource/RelaxedUT.h
-	../cppsource/PartialCholevski.h
+	../cppsource/IndexSelector.h
+	../cppsource/UTComponents.h
+	../cppsource/Stoch.h
+	../cppsource/Cholesky.h
+	../cppsource/UTMethods.h
+	../cppsource/UTCore.h
+	../cppsource/UTMultiscaledCore.h
 	)
 	
 set (SOURCES
-	../cppsource/index_selector.cpp
-	../cppsource/RelaxedUT.cpp
-	../cppsource/PartialCholevski.cpp
+	../cppsource/IndexSelector.cpp
+	../cppsource/UTComponents.cpp
+	../cppsource/Stoch.cpp
+	../cppsource/Cholesky.cpp
 	)
 
 # Add the dinamic library target to the project
@@ -50,20 +53,20 @@ endif()
 target_include_directories(lib_relaxedUT INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../cppsource/>)
 
-add_executable(example_SLAM AUT.h RelaxedAUT.h SLAMmodels.cpp SLAMmodels.h
-		Simulator.h Simulator.cpp readData.cpp readData.h SLAM_example.cpp)
-target_link_libraries(example_SLAM lib_relaxedUT)
-target_compile_definitions(example_SLAM
-			PUBLIC DATASET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/")
+#add_executable(example_SLAM AUT.h RelaxedAUT.h SLAMmodels.cpp SLAMmodels.h
+#		Simulator.h Simulator.cpp readData.cpp readData.h SLAM_example.cpp)
+#target_link_libraries(example_SLAM lib_relaxedUT)
+#target_compile_definitions(example_SLAM
+#			PUBLIC DATASET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/")
 
 add_executable(example_precision lin_example.cpp)
 target_link_libraries(example_precision lib_relaxedUT)
 
-add_executable(example_Norder Norder_example.cpp RMSE.cpp RMSE.h)
-target_link_libraries(example_Norder lib_relaxedUT)
+#add_executable(example_Norder Norder_example.cpp RMSE.cpp RMSE.h)
+#target_link_libraries(example_Norder lib_relaxedUT)
 
-add_executable(example_nonlinear nonlinear_example.cpp)
-target_link_libraries(example_nonlinear lib_relaxedUT)
+#add_executable(example_nonlinear nonlinear_example.cpp)
+#target_link_libraries(example_nonlinear lib_relaxedUT)
 
-add_executable(INES2022 INES_main.cpp UTComponents.cpp UTComponents.h INES_model.h INES_model.cpp Model.h Model.cpp FilterRMSE.h FilterRMSE.cpp)
-target_link_libraries(INES2022 lib_relaxedUT)
+#add_executable(INES2022 INES_main.cpp INES_model.h INES_model.cpp Model.h Model.cpp FilterRMSE.h FilterRMSE.cpp)
+#target_link_libraries(INES2022 lib_relaxedUT)

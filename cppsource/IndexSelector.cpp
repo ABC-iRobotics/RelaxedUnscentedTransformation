@@ -1,9 +1,7 @@
-#include "index_selector.h"
-
+#include "IndexSelector.h"
 using namespace Eigen;
-using namespace RelaxedUnscentedTransformation;
 
-Eigen::VectorXd RelaxedUnscentedTransformation::VectorSelect(const Eigen::VectorXd& v,
+Eigen::VectorXd UT::VectorSelect(const Eigen::VectorXd& v,
 	const Eigen::VectorXi& indices) {
 	Eigen::VectorXd out(indices.size());
 	for (int n = 0; n < indices.size(); n++)
@@ -11,7 +9,7 @@ Eigen::VectorXd RelaxedUnscentedTransformation::VectorSelect(const Eigen::Vector
 	return out;
 }
 
-Eigen::MatrixXd RelaxedUnscentedTransformation::MatrixRowSelect(const Eigen::MatrixXd& m,
+Eigen::MatrixXd UT::MatrixRowSelect(const Eigen::MatrixXd& m,
 	const Eigen::VectorXi& indices) {
 	Eigen::MatrixXd out(indices.size(), m.cols());
 	for (int n = 0; n < indices.size(); n++)
@@ -19,7 +17,7 @@ Eigen::MatrixXd RelaxedUnscentedTransformation::MatrixRowSelect(const Eigen::Mat
 	return out;
 }
 
-Eigen::MatrixXd RelaxedUnscentedTransformation::MatrixColumnSelect(const Eigen::MatrixXd& m,
+Eigen::MatrixXd UT::MatrixColumnSelect(const Eigen::MatrixXd& m,
 	const Eigen::VectorXi& indices) {
 	Eigen::MatrixXd out(m.rows(), indices.size());
 	for (int n = 0; n < indices.size(); n++)
@@ -27,7 +25,7 @@ Eigen::MatrixXd RelaxedUnscentedTransformation::MatrixColumnSelect(const Eigen::
 	return out;
 }
 
-Eigen::MatrixXd RelaxedUnscentedTransformation::ProductAlong(const Eigen::MatrixXd& m0, const VectorXi& ic0,
+Eigen::MatrixXd UT::ProductAlong(const Eigen::MatrixXd& m0, const VectorXi& ic0,
 	const MatrixXd& m1) {
 	auto R = m0.rows();
 	auto C = m1.cols();

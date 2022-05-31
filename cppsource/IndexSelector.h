@@ -1,8 +1,9 @@
-#pragma once
+#ifndef INDEXSELECTOR_H
+#define INDEXSELECTOR_H
 
 #include "Eigen/Dense"
 
-namespace RelaxedUnscentedTransformation {
+namespace UT {
 
 	/* \brief Function that returns the values of a vector with given indices as a new vector
 	*/
@@ -23,5 +24,6 @@ namespace RelaxedUnscentedTransformation {
 	*/
 	Eigen::MatrixXd ProductAlong(const Eigen::MatrixXd& m0,
 		const Eigen::VectorXi& ic0, const Eigen::MatrixXd& m1);
-
 }
+
+#endif
