@@ -65,8 +65,8 @@ target_link_libraries(example_precision lib_relaxedUT)
 #add_executable(example_Norder Norder_example.cpp RMSE.cpp RMSE.h)
 #target_link_libraries(example_Norder lib_relaxedUT)
 
-#add_executable(example_nonlinear nonlinear_example.cpp)
-#target_link_libraries(example_nonlinear lib_relaxedUT)
+add_executable(example_nonlinear nonlinear_example.cpp)
+target_link_libraries(example_nonlinear lib_relaxedUT)
 
 #add_executable(INES2022 INES_main.cpp INES_model.h INES_model.cpp Model.h Model.cpp FilterRMSE.h FilterRMSE.cpp)
 #target_link_libraries(INES2022 lib_relaxedUT)
