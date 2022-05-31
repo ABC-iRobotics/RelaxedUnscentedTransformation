@@ -2,6 +2,7 @@
 #include "UTMultiscaledCore.h"
 #include "UTComponents.h"
 #include <iostream>
+#include "Cholesky.h"
 
 using namespace Eigen;
 using namespace UT;
@@ -65,9 +66,6 @@ struct RelaxedIdentityUT {
 	  A(2, 1) = -2;
 	  A(2, 2) = -1;
 	  A(3, 3) = 1;
-	  // g:1...4
-	  for (int n = 0; n < 4; n++)
-		  g(n) = n;
 	  // F : 0 of 2N+2 x 3
 	  F = MatrixXd::Zero(1, 3);
 	  {
@@ -93,7 +91,7 @@ struct RelaxedIdentityUT {
 	  auto xdiffs = GenSigmaDifferencesFromExactSubspace(x.Sy, sp);
 	  auto b0 = UTCore(x.y, xdiffs, IdentityExampleNonlinear, UTOriginal(xdiffs.size()));
 	  auto b = LinearMappingOnb(b0, F);
-	  return MixedLinSourcesWithReordering(x, b, il, A, g);
+	  return MixedLinSources(x, b, il, A);
 	}
 };
 
@@ -105,6 +103,12 @@ int main() {
 	x_ << 0.1, 0.2, 0.3, 0.4;
 	MatrixXd Sx = MatrixXd::Identity(4, 4);
 	Sx(2, 2) = 0.2;
+	Sx(0, 0) = 2;
+	Sx(0, 1) = 1;
+	Sx(1, 0) = 1;
+	Sx(0, 2) = 0.1;
+	Sx(2, 0) = 0.1;
+
 	ValWithCov x(x_, Sx);
 
 	// original UT method
