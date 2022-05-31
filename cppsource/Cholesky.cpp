@@ -13,14 +13,13 @@ Eigen::MatrixXd UT::PartialChol(const Eigen::MatrixXd& a, const Eigen::VectorXi&
   for (unsigned int i = 0; i < inl.size(); i++) {
 	int j = inl(i);
 	Real temp = a(j, j);
-	for (unsigned int k = 0; k < i; k++)
+	for (unsigned int k = 0; k < i - nSkipped; k++)
 	  temp -= out(j, k) * out(j, k);
 	if (temp < eps && temp>-eps) {
 	  nSkipped++;
-	  break;
+	  continue;
 	}
 	if (temp < Real(0)) {
-
 	  std::stringstream errormsg;
 	  errormsg << "The value " << temp << " is negative, when matrix (" << a <<
 		") was  decomposed by column (" << inl.transpose() <<
@@ -30,19 +29,18 @@ Eigen::MatrixXd UT::PartialChol(const Eigen::MatrixXd& a, const Eigen::VectorXi&
 		"). The matrix is not positive definite or numerical error." << std::endl;
 	  throw std::runtime_error(errormsg.str());
 	}
-	out(j, i) = sqrtl(temp);
+	out(j, i - nSkipped) = sqrtl(temp);
 	handled[j] = 1;
-
 	for (unsigned int k = 0; k < n; k++)
 	  if (k != j) {
 		if (handled[k])
-		  out(k, i) = 0;
+		  out(k, i - nSkipped) = 0;
 		else {
 		  temp = a(k, j);
-		  for (unsigned int l = 0; l < i; l++)
+		  for (unsigned int l = 0; l < i - nSkipped; l++)
 			temp -= out(k, l) * out(j, l);
-		  temp /= out(j, i);
-		  out(k, i) = temp;
+		  temp /= out(j, i - nSkipped);
+		  out(k, i - nSkipped) = temp;
 		}
 	  }
   }
