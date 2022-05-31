@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CHOLESKY_H
+#define CHOLESKY_H
+
 #include "Eigen/Dense"
 
 namespace UT {
@@ -20,3 +22,5 @@ namespace UT {
   Eigen::MatrixXd FullChol(const Eigen::MatrixXd& a);
 
 }
+
+#endif

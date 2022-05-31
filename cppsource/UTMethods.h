@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UTMETHODS_H
+#define UTMETHODS_H
+
 #include "UTComponents.h"
 #include "UTCore.h"
 #include "UTMultiscaledCore.h"
@@ -7,7 +9,7 @@
 ///   But you can build your own method around your problem from the components.
 /// </summary>
 
-namespace UTMethods {
+namespace UT {
 
   /// <summary>
   ///	Considering the function y = f(x) (where f:Rn->Rf) function, E(x) and Sigma_xx,
@@ -20,8 +22,8 @@ namespace UTMethods {
   /// 
   template <typename Func>
   UT::ValWithCov FullUT(Func f, const UT::ValWithCov& x) {
-	auto xdiffs = UTComponents::GenSigmaDifferencesFull(x.Sy);
-	return UTComponents::UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
+	auto xdiffs = UT::GenSigmaDifferencesFull(x.Sy);
+	return UT::UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
   }
 
   /// <summary>
@@ -36,8 +38,8 @@ namespace UTMethods {
   /// 
   template <typename Func>
   UT::ValWithCov FullUTN(Func f, const UT::ValWithCov& x) {
-	auto xdiffs = UTComponents::GenSigmaDifferencesFull(x.Sy);
-	return UTComponents::MultiScaledUTCore(x, xdiffs, f, UTOriginalAsMulti(xdiffs.size()));
+	auto xdiffs = GenSigmaDifferencesFull(x.Sy);
+	return MultiScaledUTCore(x, xdiffs, f, UTOriginalAsMulti(xdiffs.size()));
   }
 
   /// <summary>
@@ -60,10 +62,10 @@ namespace UTMethods {
   UT::ValWithCov RelaxedUT(const Eigen::MatrixXd& A, const Eigen::VectorXi& il, Func f,
 	const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 	const UT::ValWithCov& x) {
-	auto xdiffs = UTComponents::GenSigmaDifferences(x.Sy, inl);
-	auto b0 = UTComponents::UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
-	auto b = UTComponents::LinearMappingOnb(b0, F);
-	return UTComponents::MixedLinSourcesWithReordering(x, b, il, A, g);
+	auto xdiffs = GenSigmaDifferences(x.Sy, inl);
+	auto b0 = UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
+	auto b = LinearMappingOnb(b0, F);
+	return MixedLinSourcesWithReordering(x, b, il, A, g);
   }
 
   /// <summary>
@@ -86,9 +88,11 @@ namespace UTMethods {
   UT::ValWithCov RelaxedUTN(const Eigen::MatrixXd& A, const Eigen::VectorXi& il, Func f,
 	const Eigen::MatrixXd& F, const Eigen::VectorXi& g, const Eigen::VectorXi& inl,
 	const UT::ValWithCov& x) {
-	auto xdiffs = UTComponents::GenSigmaDifferences(x.Sy, inl);
-	auto b0 = UTComponents::MultiScaledUTCore(x, xdiffs, f, UTOriginalAsMulti(xdiffs.size()));
-	auto b = UTComponents::LinearMappingOnb(b0, F);
-	return UTComponents::MixedLinSourcesWithReordering(x, b, il, A, g);
+	auto xdiffs = GenSigmaDifferences(x.Sy, inl);
+	auto b0 = MultiScaledUTCore(x, xdiffs, f, UTOriginalAsMulti(xdiffs.size()));
+	auto b = LinearMappingOnb(b0, F);
+	return MixedLinSourcesWithReordering(x, b, il, A, g);
   }
 }
+
+#endif
