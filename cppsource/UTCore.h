@@ -57,8 +57,9 @@ namespace UT {
 	int m = xdiffs.size();
 	// Scale offsets
 	std::vector<Eigen::VectorXd> scaledxdiffs;
+	double sqrtkappa = sqrt(settings.kappa);
 	for (int i = 0; i < m; i++)
-	  scaledxdiffs.push_back(xdiffs[i] * sqrt(settings.kappa));
+	  scaledxdiffs.push_back(xdiffs[i] * sqrtkappa);
 	// Map the sigma points
 	Eigen::VectorXd Z0 = f(x);
 	std::vector<Eigen::VectorXd> Zi;

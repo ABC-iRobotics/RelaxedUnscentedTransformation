@@ -140,8 +140,6 @@ struct RelaxedOutputUpdate {
   }
 };
 
-
-
 int main (void) {
 	// Inputvalues
 	Eigen::VectorXd x_ = Eigen::VectorXd::Zero(11);
