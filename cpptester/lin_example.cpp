@@ -15,7 +15,7 @@ VectorXd IdentityFull(const VectorXd& a) {
 }
 
 UT::ValWithCov FullUT(const UT::ValWithCov& x) {
-  auto xdiffs = GenSigmaDifferencesFull(x.Sy);
+  auto xdiffs = GenSigmaDifferences(x.Sy);
   return UTCore(x.y, xdiffs, IdentityFull, UTOriginal(xdiffs.size()));
 }
 
@@ -88,7 +88,7 @@ struct RelaxedIdentityUT {
 	}
 
 	ValWithCov UT(const ValWithCov& x) {
-	  auto xdiffs = GenSigmaDifferencesFromExactSubspace(x.Sy, sp);
+	  auto xdiffs = GenSigmaDifferences(x.Sy, sp);
 	  auto b0 = UTCore(x.y, xdiffs, IdentityExampleNonlinear, UTOriginal(xdiffs.size()));
 	  auto b = LinearMappingOnb(b0, F);
 	  return MixedLinSources(x, b, il, A);

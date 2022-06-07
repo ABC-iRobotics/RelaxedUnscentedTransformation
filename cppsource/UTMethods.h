@@ -22,7 +22,7 @@ namespace UT {
   /// 
   template <typename Func>
   UT::ValWithCov FullUT(Func f, const UT::ValWithCov& x) {
-	auto xdiffs = UT::GenSigmaDifferencesFull(x.Sy);
+	auto xdiffs = UT::GenSigmaDifferences(x.Sy);
 	return UT::UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
   }
 
@@ -65,7 +65,7 @@ namespace UT {
 	auto xdiffs = GenSigmaDifferences(x.Sy, inl);
 	auto b0 = UTCore(x.y, xdiffs, f, UTOriginal(xdiffs.size()));
 	auto b = LinearMappingOnb(b0, F);
-	return MixedLinSourcesWithReordering(x, b, il, A, g);
+	return MixedLinSources(x, Reordering(b,g), il, A);
   }
 
   /// <summary>
@@ -91,7 +91,7 @@ namespace UT {
 	auto xdiffs = GenSigmaDifferences(x.Sy, inl);
 	auto b0 = MultiScaledUTCore(x, xdiffs, f, UTOriginalAsMulti(xdiffs.size()));
 	auto b = LinearMappingOnb(b0, F);
-	return MixedLinSourcesWithReordering(x, b, il, A, g);
+	return MixedLinSources(x, Reordering(b, g), il, A);
   }
 }
 

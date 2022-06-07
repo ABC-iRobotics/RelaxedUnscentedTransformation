@@ -5,7 +5,7 @@ using namespace UT;
 
 typedef Eigen::LLT<Eigen::MatrixXd>::RealScalar Real;
 
-std::vector<Eigen::VectorXd> UT::GenSigmaDifferencesFull(const Eigen::MatrixXd& S) {
+std::vector<Eigen::VectorXd> UT::GenSigmaDifferences(const Eigen::MatrixXd& S) {
   // partial Choleski
   Eigen::MatrixXd L = FullChol(S);
   std::vector<Eigen::VectorXd> out;
@@ -24,7 +24,7 @@ std::vector<Eigen::VectorXd> UT::GenSigmaDifferences(const Eigen::MatrixXd& S,
   return out;
 }
 
-std::vector<Eigen::VectorXd> UT::GenSigmaDifferencesFromExactSubspace(const Eigen::MatrixXd& S, const ExactSubspace& sp) {
+std::vector<Eigen::VectorXd> UT::GenSigmaDifferences(const Eigen::MatrixXd& S, const ExactSubspace& sp) {
   Eigen::MatrixXd Stemp = sp.Q * S * sp.Q1().transpose();
   // partial Choleski
   Eigen::MatrixXd L = UT::PartialChol(Stemp, Eigen::VectorXi::LinSpaced(sp.m, 0, sp.m - 1)); //TODO: test!!
@@ -85,25 +85,10 @@ ValWithCov UT::LinearMappingOnbWith0(const ValWithCov& b0, const Eigen::MatrixXd
   return ValWithCov(b, Sb, Sxb);
 }
 
-ValWithCov UT::MixedLinSourcesWithReordering(const ValWithCov& x, const ValWithCov& b,
-  const Eigen::VectorXi& il, const Eigen::MatrixXd& A, const Eigen::VectorXi& g) {
-  auto& x0_ = x.y;
-  auto& S0 = x.Sy;
-  auto& b_ = b.y;
-  auto& Sb = b.Sy;
-  auto& Sxb = b.Sxy;
-  // Init x_l
-  Eigen::VectorXd xl = VectorSelect(x0_, il);
-  // Determine y related quantities
-  Eigen::VectorXd y = VectorSelect(b_, g) + A * xl;
-
-  Eigen::MatrixXd Sxbg = MatrixColumnSelect(Sxb, g);
-  Eigen::MatrixXd Sbgbg = MatrixColumnSelect(MatrixRowSelect(Sb, g), g);
-  Eigen::MatrixXd At = A.transpose();
-  Eigen::MatrixXd Sxy = Sxbg + MatrixColumnSelect(S0, il) * At;
-  Eigen::MatrixXd Sy = Sbgbg + A * MatrixRowSelect(Sxy, il) + MatrixColumnSelect(Sxbg.transpose(), il) * At;
-
-  return ValWithCov(y, Sy, Sxy);
+UT::ValWithCov UT::Reordering(const ValWithCov& b, const Eigen::VectorXi& g) {
+  return ValWithCov(VectorSelect(b.y, g),
+	MatrixColumnSelect(MatrixRowSelect(b.Sy, g), g),
+	MatrixColumnSelect(b.Sxy, g));
 }
 
 ValWithCov UT::MixedLinSources(const ValWithCov& x, const ValWithCov& b,

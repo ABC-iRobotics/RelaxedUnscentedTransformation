@@ -17,7 +17,7 @@ namespace UT {
   /// <param name="S"> covariance (symmetric semi-positive definite) matrix of size n x n </param>
   /// <returns> std::vector of delta_1,...,delta_n vectors of length n </returns>
   ///
-  std::vector<Eigen::VectorXd> GenSigmaDifferencesFull(const Eigen::MatrixXd& S);
+  std::vector<Eigen::VectorXd> GenSigmaDifferences(const Eigen::MatrixXd& S);
 
   /// <summary>
   /// The function generates std::vector of delta_1,...,delta_m vectors such that the sum of
@@ -90,7 +90,7 @@ namespace UT {
   /// <param name="sp"> descriptor of the subspace of nonlinearity of type ExactSubspace </param>
   /// <returns> std::vector of delta_1,...,delta_m vectors of length n </returns>
   /// 
-  std::vector<Eigen::VectorXd> GenSigmaDifferencesFromExactSubspace(const Eigen::MatrixXd& S,
+  std::vector<Eigen::VectorXd> GenSigmaDifferences(const Eigen::MatrixXd& S,
 	const ExactSubspace& sp);
 
   /// <summary>
@@ -112,19 +112,15 @@ namespace UT {
   UT::ValWithCov LinearMappingOnbWith0(const UT::ValWithCov& b0, const Eigen::MatrixXd& F);
 
   /// <summary>
-  ///	Considering E(x), Sigma_xx, E(b), Sigma_bb, Sigma_xb and function y = A*x(il) + b(g),
-  ///	the method determines E(y), Sigma_yy and Sigma_xy 
+  ///	Considering E(b0), Sigma_b0b0, Sigma_xb0 and function b = b0(g),
+  ///	the method determines E(b), Sigma_b and Sigma_xb 
   /// </summary>
-  /// <param name="x"> Contains E(x) vector length n and Sigma_xx matrix of size nxn </param>
-  /// <param name="b"> Contains E(b) vector of length j, Sigma_bb matrix of size jxj, Sigma_xb matrix of size nxj </param>
-  /// <param name="il"> Indices of x (from 0,..,n-1) that must be multiplied with matrix A of length h </param>
-  /// <param name="A"> Coefficient matrix of size fxh</param>
+  /// <param name="b0"> Contains E(b0) vector of length j, Sigma_b0b0 matrix of size jxj, Sigma_xb0 matrix of size nxj </param>
   /// <param name="g"> Indices for vector b (from 0,..,(j-1),
   ///  but can contain the same index multiple times as well) of length f </param>
-  /// <returns> Contains E(y) vector of length f, Sigma_yy matrix of size fxf, Sigma_xy matrix of size nxf </returns>
+  /// <returns> Contains E(b) vector of length f, Sigma_bb matrix of size fxf, Sigma_xb matrix of size nxf </returns>
   /// 
-  UT::ValWithCov MixedLinSourcesWithReordering(const UT::ValWithCov& x, const UT::ValWithCov& b,
-	const Eigen::VectorXi& il, const Eigen::MatrixXd& A, const Eigen::VectorXi& g);
+  ValWithCov Reordering(const ValWithCov& b0, const Eigen::VectorXi& g);
 
   /// <summary>
   ///	Considering E(x), Sigma_xx, E(b), Sigma_bb, Sigma_xb and function y = A*x(il) + b,
