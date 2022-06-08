@@ -134,6 +134,18 @@ namespace UT {
   /// 
   UT::ValWithCov MixedLinSources(const UT::ValWithCov& x, const UT::ValWithCov& b,
 	const Eigen::VectorXi& il, const Eigen::MatrixXd& A);
+
+  /// <summary>
+  ///	Considering the results of the prediction and the measured value, the function provides the optimal estimation (assuming Gauss-distribution, etc..)
+  /// </summary>
+  /// <param name="x"> Contains E(x) vector of length n and Sigma_xx matrix of size nxn from the predicition </param>
+  /// <param name="y"> Contains E(y) vector of length l Sigma_xy and Sigma_yy matrix of size lxn, nxn from the predicition </param>
+  /// <param name="ymeas"> Contains the measured output y vector of length l </param>
+  /// <param name="eps"> Small value to avoid negative eigen values in the resulted covariance matrix </param>
+  /// <returns></returns>
+  /// 
+  ValWithCov KalmanFilter(const UT::ValWithCov& x, const UT::ValWithCov& y,
+	const Eigen::VectorXd& ymeas, double eps = 1e-5);
 }
 
 #endif

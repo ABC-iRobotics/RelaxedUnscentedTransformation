@@ -148,3 +148,10 @@ UT::ExactSubspace::ExactSubspace(int n, const Eigen::VectorXi& inl, const MixedN
   // save it sparse
   Q = Qdense.sparseView();
 }
+
+UT::ValWithCov UT::KalmanFilter(const UT::ValWithCov& x, const UT::ValWithCov& y, const Eigen::VectorXd& ymeas, double eps = 1e-5) {
+  Eigen::MatrixXd K = y.Sxy * y.Sy.inverse() * (1. - eps);
+  Eigen::VectorXd xout = x.y - K * (y.y - ymeas);
+  Eigen::MatrixXd Sxout = x.Sy - K * y.Sxy.transpose();
+  return ValWithCov(xout, Sxout);
+}
