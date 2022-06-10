@@ -13,7 +13,7 @@ namespace UT {
 	ValWithCov(const Eigen::VectorXd y_, const Eigen::MatrixXd& Sy_);
   };
 
-  Eigen::VectorXd RandomVector(const Eigen::MatrixXd& S);
+  Eigen::VectorXd RandomVector(const Eigen::MatrixXd& sqrtS);
 }
 
 #endif

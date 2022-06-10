@@ -76,7 +76,7 @@ namespace UT {
 	/// <summary>
 	/// Dummy constructor
 	/// </summary>
-	ExactSubspace() {};
+	ExactSubspace() : m(0), Q() {};
   };
   
   /// <summary>
@@ -100,7 +100,7 @@ namespace UT {
   /// <param name="F"> Coefficient matrix of size kxl </param>
   /// <returns> Contains E(b) vector of length (k+l), Sigma_bb matrix of size (k+l)x(k+l), Sigma_xb matrix of size nx(k+l) </returns>
   /// 
-  UT::ValWithCov LinearMappingOnb(const UT::ValWithCov& b0, const Eigen::MatrixXd& F);
+  ValWithCov LinearMappingOnb(const ValWithCov& b0, const Eigen::MatrixXd& F);
 
   /// <summary>
   ///	Considering E(b0), Sigma_b0b0, Sigma_xb0 and function b = [0;b0;F * b0], the method determines E(b), Sigma_bb, Sigma_xb
@@ -109,7 +109,7 @@ namespace UT {
   /// <param name="F"> Coefficient matrix of size kxl </param>
   /// <returns> Contains E(b) vector of length j, Sigma_bb matrix of size jxj, Sigma_xb matrix of size nxj, where j=k+l+1 </returns>
   /// 
-  UT::ValWithCov LinearMappingOnbWith0(const UT::ValWithCov& b0, const Eigen::MatrixXd& F);
+  ValWithCov LinearMappingOnbWith0(const ValWithCov& b0, const Eigen::MatrixXd& F);
 
   /// <summary>
   ///	Considering E(b0), Sigma_b0b0, Sigma_xb0 and function b = b0(g),
@@ -132,7 +132,7 @@ namespace UT {
   /// <param name="A"> Coefficient matrix of size fxh</param>
   /// <returns> Contains E(y) vector of length f, Sigma_yy matrix of size fxf, Sigma_xy matrix of size nxf </returns>
   /// 
-  UT::ValWithCov MixedLinSources(const UT::ValWithCov& x, const UT::ValWithCov& b,
+  ValWithCov MixedLinSources(const ValWithCov& x, const ValWithCov& b,
 	const Eigen::VectorXi& il, const Eigen::MatrixXd& A);
 
   /// <summary>
@@ -144,7 +144,7 @@ namespace UT {
   /// <param name="eps"> Small value to avoid negative eigen values in the resulted covariance matrix </param>
   /// <returns></returns>
   /// 
-  ValWithCov KalmanFilter(const UT::ValWithCov& x, const UT::ValWithCov& y,
+  ValWithCov KalmanFilter(const ValWithCov& x, const ValWithCov& y,
 	const Eigen::VectorXd& ymeas, double eps = 1e-5);
 }
 
