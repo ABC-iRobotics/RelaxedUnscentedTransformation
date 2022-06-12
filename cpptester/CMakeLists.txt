@@ -58,3 +58,6 @@ target_link_libraries(example_precision lib_relaxedUT)
 
 add_executable(example_nonlinear nonlinear_example.cpp)
 target_link_libraries(example_nonlinear lib_relaxedUT)
+
+add_executable(example_comparison comparison_example.cpp)
+target_link_libraries(example_comparison lib_relaxedUT)
