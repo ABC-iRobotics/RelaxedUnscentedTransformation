@@ -96,7 +96,7 @@ namespace UT {
 	  Eigen::MatrixXd Sxz_a = Eigen::MatrixXd::Zero(n, g);
 	  for (int b = 0; b < m; b++)
 		Sxz_a += scaledxdiffs[b] * (Zi[b + m] - Zi[b]).transpose();
-	  Sxz += Sxz_a * sqrt(settings.V1 * settings.W1);
+	  Sxz += Sxz_a * settings.V1;
 	}
 	return UT::ValWithCov(z, Sz, Sxz);
   }
