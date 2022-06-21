@@ -61,3 +61,6 @@ target_link_libraries(example_nonlinear lib_relaxedUT)
 
 add_executable(example_comparison comparison_example.cpp)
 target_link_libraries(example_comparison lib_relaxedUT)
+
+add_executable(example_sim sim_example.cpp sim_lib.cpp sim_lib.h)
+target_link_libraries(example_sim lib_relaxedUT)
