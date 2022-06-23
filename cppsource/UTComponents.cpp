@@ -106,7 +106,7 @@ ValWithCov UT::MixedLinSources(const ValWithCov& x, const ValWithCov& b,
   Eigen::MatrixXd At = A.transpose();
   Eigen::MatrixXd Sxy = Sxb + MatrixColumnSelect(S0, il) * At;
   Eigen::MatrixXd Sy = Sb + A * MatrixRowSelect(Sxy, il) + MatrixColumnSelect(Sxb.transpose(), il) * At;
-
+  Sy = (Sy + Sy.transpose()) * 0.5; // symmetry in this case must be guaranteed - like in the EKF
   return ValWithCov(y, Sy, Sxy);
 }
 
